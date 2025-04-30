@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trắc Nghiệm | Vocabulary Manager</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #60a5fa; /* Light blue */
+        --secondary-color: #2563eb; /* Darker blue */
+        --background: #f0f4f8; /* Light gray-blue background */
+        --card-bg: #ffffff; /* White cards */
+        --text-primary: #1e293b; /* Dark text */
+        --text-secondary: #64748b; /* Gray text */
+        --shadow: 0 6px 25px rgba(0, 0, 0, 0.06); /* Soft shadow */
+        --success: #22c55e; /* Green for success */
+        --error: #ef4444; /* Red for errors */
+        --warning: #f59e0b; /* Orange for warnings */
+        --border-color: #e2e8f0; /* Light border */
+        --light-blue: rgba(96, 165, 250, 0.2); /* Subtle blue background */
+        --ipa-color: #ff6b6b; /* Red for phonetic */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 15px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes ipaPulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes iconHover {
+        0% {
+          transform: scale(1);
+          filter: brightness(100%);
+        }
+        100% {
+          transform: scale(1.1);
+          filter: brightness(120%);
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: var(--background);
+        min-height: 100vh;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .sidebar {
+        width: 250px;
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+        height: fit-content;
+        position: sticky;
+        top: 1.5rem;
+      }
+
+      .sidebar-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+      }
+
+      .sidebar-item i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-item i:hover {
+        animation: iconHover 0.3s forwards;
+      }
+
+      .main-content {
+        flex: 1;
+        max-width: 700px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 1.5rem;
+      }
+
+      .back-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--card-bg);
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+      }
+
+      .back-button:hover {
+        background: var(--primary-color);
+        color: var(--card-bg);
+        transform: scale(1.05);
+      }
+
+      .back-button i {
+        font-size: 1.2rem;
+      }
+
+      .info-panel {
+        position: fixed;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 250px;
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+      }
+
+      .info-panel-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .info-panel-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+      }
+
+      .info-panel-item i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .info-panel-item i:hover {
+        animation: iconHover 0.3s forwards;
+      }
+
+      .quiz-container {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+      }
+
+      .quiz-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .quiz-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .quiz-info {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+      .timer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+        color: var(--primary-color);
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 4px;
+        background: var(--border-color);
+        border-radius: 999px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+      }
+
+      .progress {
+        height: 100%;
+        background: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .question-container {
+        margin-bottom: 1.5rem;
+      }
+
+      .question {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .phonetic {
+        font-size: 1rem;
+        color: var(--ipa-color);
+        margin-top: 0.5rem;
+        font-weight: 500;
+        background: rgba(255, 107, 107, 0.1);
+        padding: 0.3rem 0.6rem;
+        border-radius: var(--radius-sm);
+        display: inline-block;
+        animation: ipaPulse 2s infinite;
+      }
+
+      .play-audio-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.2rem;
+      }
+
+      .play-audio-btn:hover {
+        color: var(--secondary-color);
+      }
+
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .option {
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        background: var(--card-bg);
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+      }
+
+      .option:hover {
+        border-color: var(--primary-color);
+        box-shadow: 0 2px 8px rgba(96, 165, 250, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .option.selected {
+        border-color: var(--primary-color);
+        background: var(--light-blue);
+      }
+
+      .option.correct {
+        border-color: var(--success);
+        background: rgba(34, 197, 94, 0.1);
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .option.wrong {
+        border-color: var(--error);
+        background: rgba(239, 68, 68, 0.1);
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .quiz-controls {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 0 1rem;
+      }
+
+      .btn {
+        padding: 0.7rem 1.5rem;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--card-bg);
+        color: var(--primary-color);
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: var(--card-bg);
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary-color);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+      }
+
+      .btn-secondary:hover {
+        background: var(--primary-color);
+        color: var(--card-bg);
+      }
+
+      .hint-btn {
+        background: var(--warning);
+        color: var(--card-bg);
+      }
+
+      .hint-btn:hover {
+        background: #d97706; /* Darker warning color */
+      }
+
+      .btn i {
+        font-size: 1rem;
+        color: inherit;
+      }
+
+      .result-container {
+        text-align: center;
+        padding: 1.5rem;
+        background: var(--card-bg);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+      }
+
+      .result-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .result-score {
+        font-size: 1.5rem;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+      }
+
+      .notification {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+        border-radius: var(--radius-sm);
+        color: var(--card-bg);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .notification.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .footer-info {
+        margin-top: 1.5rem;
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .footer-info-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .footer-info-content {
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        line-height: 1.6;
+      }
+
+      .footer-info-content i {
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .footer-info-content i:hover {
+        animation: iconHover 0.3s forwards;
+      }
+
+      @media (max-width: 1024px) {
+        .container {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          position: static;
+        }
+        .info-panel {
+          position: static;
+          width: 100%;
+          transform: none;
+          margin: 1rem 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1rem;
+        }
+
+        .quiz-container,
+        .result-container,
+        .sidebar,
+        .info-panel,
+        .footer-info {
+          padding: 1rem;
+        }
+
+        .quiz-title {
+          font-size: 1.25rem;
+        }
+
+        .quiz-info {
+          gap: 0.75rem;
+          font-size: 0.85rem;
+        }
+
+        .question {
+          font-size: 1.1rem;
+        }
+
+        .phonetic {
+          font-size: 0.9rem;
+        }
+
+        .options {
+          grid-template-columns: 1fr;
+          gap: 0.5rem;
+        }
+
+        .option {
+          padding: 0.75rem;
+          font-size: 0.85rem;
+        }
+
+        .btn {
+          padding: 0.65rem 1rem;
+          font-size: 0.9rem;
+        }
+
+        .btn i {
+          font-size: 0.9rem;
+        }
+
+        .result-title {
+          font-size: 1.75rem;
+        }
+
+        .result-score {
+          font-size: 1.25rem;
+        }
+
+        .notification {
+          padding: 0.5rem 1rem;
+          font-size: 0.85rem;
+          right: 1rem;
+          bottom: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .quiz-title {
+          font-size: 1.1rem;
+        }
+
+        .question {
+          font-size: 1rem;
+        }
+
+        .phonetic {
+          font-size: 0.85rem;
+        }
+
+        .option {
+          padding: 0.65rem;
+          font-size: 0.8rem;
+        }
+
+        .btn {
+          padding: 0.6rem 0.8rem;
+          font-size: 0.85rem;
+        }
+
+        .btn i {
+          font-size: 0.85rem;
+        }
+
+        .result-title {
+          font-size: 1.5rem;
+        }
+
+        .result-score {
+          font-size: 1.1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <h3 class="sidebar-title">Tính Năng Quiz</h3>
+        <div class="sidebar-item">
+          <i class="fas fa-bolt"></i>
+          Trả lời nhanh trong 15 giây để rèn phản xạ.
+        </div>
+        <div class="sidebar-item">
+          <i class="fas fa-lightbulb"></i>
+          Dùng gợi ý để loại bỏ đáp án sai.
+        </div>
+        <div class="sidebar-item">
+          <i class="fas fa-volume-up"></i>
+          Nghe phát âm chuẩn Anh-Mỹ.
+        </div>
+        <div class="sidebar-item">
+          <i class="fas fa-star"></i>
+          Theo dõi tiến độ với thanh tiến trình.
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="header">
+          <a href="#" class="back-button" id="backButton">
+            <i class="fas fa-arrow-left"></i>
+          </a>
+        </div>
+
+        <div class="quiz-container" id="quizContainer">
+          <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
+          </div>
+          <div class="quiz-header">
+            <h2 class="quiz-title" id="folderName">Loading...</h2>
+            <div class="quiz-info">
+              <span id="progressText">0/0</span>
+              <span class="timer"
+                ><i class="fas fa-clock"></i> <span id="timer">15</span>s</span
+              >
+            </div>
+          </div>
+          <div class="question-container">
+            <div class="question" id="questionText">
+              Loading...
+              <button class="play-audio-btn" onclick="playAudio()">
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+            <div class="phonetic" id="phoneticText"></div>
+          </div>
+          <div class="options" id="optionsContainer"></div>
+          <div class="quiz-controls">
+            <button
+              class="btn btn-secondary hint-btn"
+              id="hintBtn"
+              onclick="showHint()"
+            >
+              <i class="fas fa-lightbulb"></i> Gợi ý
+            </button>
+            <button
+              class="btn btn-primary"
+              id="nextBtn"
+              onclick="nextQuestion()"
+              style="display: none"
+            >
+              Tiếp theo <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="result-container"
+          id="resultContainer"
+          style="display: none"
+        >
+          <h2 class="result-title">Kết Quả</h2>
+          <div class="result-score" id="resultScore"></div>
+          <div class="quiz-controls">
+            <button class="btn btn-primary" onclick="restartQuiz()">
+              <i class="fas fa-redo"></i> Làm lại
+            </button>
+            <a href="study-options.html" class="btn btn-secondary">
+              <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-info">
+          <h3 class="footer-info-title">Hướng Dẫn Học Quiz</h3>
+          <div class="footer-info-content">
+            <p>
+              <i class="fas fa-check-circle"></i> Làm quiz nhiều lần để ghi nhớ
+              từ vựng lâu hơn.
+            </p>
+            <p>
+              <i class="fas fa-headphones"></i> Nghe phát âm và lặp lại để cải
+              thiện kỹ năng nói.
+            </p>
+            <p>
+              <i class="fas fa-trophy"></i> Đặt mục tiêu đạt 80% trở lên để
+              chinh phục từ vựng!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <h3 class="info-panel-title">Lợi Ích Của Quiz</h3>
+        <div class="info-panel-item">
+          <i class="fas fa-brain"></i>
+          Củng cố trí nhớ dài hạn.
+        </div>
+        <div class="info-panel-item">
+          <i class="fas fa-clock"></i>
+          Tăng tốc độ phản xạ.
+        </div>
+        <div class="info-panel-item">
+          <i class="fas fa-chart-line"></i>
+          Theo dõi tiến bộ học tập.
+        </div>
+      </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <audio
+      id="correctSound"
+      src="../main/Am_thanh_lua_chon_Dung-www_tiengdong_com.mp3"
+    ></audio>
+    <audio
+      id="wrongSound"
+      src="../main/Am_thanh_khi_chon_nham-www_tiengdong_com.mp3"
+    ></audio>
+
+    <script>
+      let currentFolderId = null;
+      let flashcards = [];
+      let currentQuestion = 0;
+      let score = 0;
+      let questions = [];
+      let selectedAnswer = null;
+      let timeLeft = 15;
+      let timerInterval = null;
+
+      const correctSound = document.getElementById("correctSound");
+      const wrongSound = document.getElementById("wrongSound");
+
+      window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        currentFolderId = urlParams.get("id");
+
+        if (!currentFolderId) {
+          showNotification("Không tìm thấy thư mục!", "error");
+          setTimeout(() => (window.location.href = "study-options.html"), 2000);
+          return;
+        }
+
+        const backButton = document.getElementById("backButton");
+        backButton.href = `study-options.html?id=${currentFolderId}`;
+
+        loadQuizData();
+      };
+
+      function loadQuizData() {
+        const flashcardsData = localStorage.getItem(
+          `flashcards_${currentFolderId}`
+        );
+        const foldersData = localStorage.getItem("vocabularyFolders");
+
+        if (!flashcardsData || !foldersData) {
+          showNotification("Chưa có từ vựng để làm trắc nghiệm!", "warning");
+          setTimeout(
+            () =>
+              (window.location.href = `vocabulary-input.html?id=${currentFolderId}`),
+            2000
+          );
+          return;
+        }
+
+        flashcards = JSON.parse(flashcardsData);
+        if (flashcards.length === 0) {
+          showNotification("Thư mục này chưa có từ vựng!", "warning");
+          setTimeout(
+            () =>
+              (window.location.href = `vocabulary-input.html?id=${currentFolderId}`),
+            2000
+          );
+          return;
+        }
+
+        const folders = JSON.parse(foldersData);
+        let folderName = "Unknown Folder";
+        for (let i = 1; i <= 7; i++) {
+          const folder = folders[`day${i}`]?.find(
+            (f) => f.id === parseInt(currentFolderId)
+          );
+          if (folder) {
+            folderName = folder.name;
+            break;
+          }
+        }
+        document.getElementById("folderName").textContent = folderName;
+
+        generateQuestions();
+        showQuestion();
+      }
+
+      function generateQuestions() {
+        questions = flashcards.map((card) => {
+          const correctAnswer = card.meaning;
+          const wrongAnswers = getRandomWrongAnswers(card.meaning, 3);
+          const options = [correctAnswer, ...wrongAnswers];
+          shuffleArray(options);
+
+          return {
+            question: card.word,
+            ipa: card.ipa || "",
+            options,
+            correct: correctAnswer,
+          };
+        });
+        shuffleArray(questions);
+      }
+
+      function getRandomWrongAnswers(correctAnswer, count) {
+        const wrongAnswers = [];
+        const availableMeanings = flashcards
+          .map((card) => card.meaning)
+          .filter((m) => m !== correctAnswer);
+
+        for (let i = 0; i < count && availableMeanings.length > 0; i++) {
+          const idx = Math.floor(Math.random() * availableMeanings.length);
+          wrongAnswers.push(availableMeanings[idx]);
+          availableMeanings.splice(idx, 1);
+        }
+
+        while (wrongAnswers.length < count) {
+          wrongAnswers.push(`Nghĩa khác ${wrongAnswers.length + 1}`);
+        }
+        return wrongAnswers;
+      }
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 15;
+        document.getElementById("timer").textContent = timeLeft;
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          document.getElementById("timer").textContent = timeLeft;
+          if (timeLeft <= 5)
+            document.getElementById("timer").style.color = "var(--error)";
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            checkAnswer(null);
+          }
+        }, 1000);
+      }
+
+      function playAudio() {
+        const question = questions[currentQuestion];
+        const utterance = new SpeechSynthesisUtterance(question.question);
+        utterance.lang = "en-US";
+        speechSynthesis.speak(utterance);
+      }
+
+      function showQuestion() {
+        if (currentQuestion >= questions.length) {
+          showResult();
+          return;
+        }
+
+        const question = questions[currentQuestion];
+        document.getElementById(
+          "questionText"
+        ).innerHTML = `Từ "${question.question}" có nghĩa là gì? <button class="play-audio-btn" onclick="playAudio()"><i class="fas fa-volume-up"></i></button>`;
+        document.getElementById("phoneticText").textContent = question.ipa
+          ? `/${question.ipa}/`
+          : "";
+        document.getElementById("progressText").textContent = `${
+          currentQuestion + 1
+        }/${questions.length}`;
+        updateProgressBar();
+
+        const optionsContainer = document.getElementById("optionsContainer");
+        optionsContainer.innerHTML = "";
+        question.options.forEach((option, idx) => {
+          const div = document.createElement("div");
+          div.className = "option";
+          div.textContent = `${String.fromCharCode(65 + idx)}. ${option}`;
+          div.onclick = () => checkAnswer(option, div);
+          optionsContainer.appendChild(div);
+        });
+
+        document.getElementById("nextBtn").style.display = "none";
+        document.getElementById("hintBtn").style.display = "flex";
+        document.getElementById("hintBtn").disabled = false;
+        selectedAnswer = null;
+        startTimer();
+      }
+
+      function updateProgressBar() {
+        const percentage = ((currentQuestion + 1) / questions.length) * 100;
+        document.getElementById("progressBar").style.width = `${percentage}%`;
+      }
+
+      function checkAnswer(answer, element) {
+        clearInterval(timerInterval);
+        selectedAnswer = answer;
+        const question = questions[currentQuestion];
+        const options = document.querySelectorAll(".option");
+
+        options.forEach((opt) => {
+          opt.style.pointerEvents = "none";
+          const optionText = opt.textContent.slice(3);
+          if (optionText === question.correct) {
+            opt.classList.add("correct");
+          } else if (optionText === selectedAnswer) {
+            opt.classList.add("wrong");
+          }
+        });
+
+        if (selectedAnswer === question.correct) {
+          score++;
+          correctSound.play();
+          showNotification("Đúng rồi! 🎉", "success");
+        } else {
+          wrongSound.play();
+          showNotification(
+            `Sai rồi! Đáp án đúng là: "${question.correct}"`,
+            "error"
+          );
+        }
+
+        document.getElementById("hintBtn").style.display = "none";
+        document.getElementById("nextBtn").style.display = "flex";
+      }
+
+      function showHint() {
+        const question = questions[currentQuestion];
+        const options = document.querySelectorAll(".option");
+        const wrongOption = Array.from(options).find(
+          (opt) =>
+            opt.textContent.slice(3) !== question.correct && !opt.style.opacity
+        );
+        if (wrongOption) {
+          wrongOption.style.opacity = "0.5";
+          wrongOption.style.pointerEvents = "none";
+          showNotification("Đã loại một đáp án sai!", "warning");
+          document.getElementById("hintBtn").disabled = true;
+        }
+      }
+
+      function nextQuestion() {
+        currentQuestion++;
+        showQuestion();
+      }
+
+      function showResult() {
+        document.getElementById("quizContainer").style.display = "none";
+        document.getElementById("resultContainer").style.display = "block";
+
+        const percentage = Math.round((score / questions.length) * 100);
+        document.getElementById(
+          "resultScore"
+        ).textContent = `Bạn đúng ${score}/${questions.length} câu (${percentage}%)`;
+        updateLastReviewed();
+      }
+
+      function updateLastReviewed() {
+        const folders =
+          JSON.parse(localStorage.getItem("vocabularyFolders")) || {};
+        for (let i = 1; i <= 7; i++) {
+          const dayKey = `day${i}`;
+          if (folders[dayKey]) {
+            const folderIdx = folders[dayKey].findIndex(
+              (f) => f.id === parseInt(currentFolderId)
+            );
+            if (folderIdx !== -1) {
+              folders[dayKey][folderIdx].lastReviewed =
+                new Date().toLocaleString();
+              localStorage.setItem(
+                "vocabularyFolders",
+                JSON.stringify(folders)
+              );
+              break;
+            }
+          }
+        }
+      }
+
+      function restartQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        selectedAnswer = null;
+        generateQuestions();
+        document.getElementById("quizContainer").style.display = "block";
+        document.getElementById("resultContainer").style.display = "none";
+        showQuestion();
+      }
+
+      function showNotification(message, type = "info") {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.style.backgroundColor =
+          type === "success"
+            ? "var(--success)"
+            : type === "error"
+            ? "var(--error)"
+            : type === "warning"
+            ? "var(--warning)"
+            : "var(--primary-color)";
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 2500);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === " " &&
+          document.getElementById("nextBtn").style.display !== "none"
+        ) {
+          nextQuestion();
+        } else if (e.key === "h") {
+          showHint();
+        } else if (e.key === "p") {
+          playAudio();
+        }
+      });
+    </script>
+  </body>
+</html>

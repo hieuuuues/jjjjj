@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNIer - Học từ vựng thông minh</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        /* Màu sắc */
+        --primary-color: #3b82f6; /* Xanh dương nhạt */
+        --secondary-color: #60a5fa; /* Xanh dương sáng hơn */
+        --accent-color: #dbeafe; /* Nền nhạt cho tin nhắn */
+        --text-dark: #1e293b; /* Màu chữ chính */
+        --text-light: #64748b; /* Màu chữ phụ */
+        --bg-light: #f1f5f9; /* Nền trang */
+        --bg-white: #ffffff; /* Nền trắng */
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --gradient-primary: linear-gradient(135deg, #3b82f6, #60a5fa);
+
+        /* Khoảng cách và bán kính */
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 14px;
+
+        /* Typography */
+        --font-sm: 0.875rem;
+        --font-md: 1rem;
+        --font-lg: 1.25rem;
+        --font-xl: 2rem;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+
+      body {
+        background: var(--bg-light);
+        min-height: 100vh;
+        padding: var(--spacing-lg);
+        color: var(--text-dark);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        gap: var(--spacing-lg);
+      }
+
+      /* Start Overlay */
+      .start-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+
+      .start-content {
+        text-align: center;
+        padding: var(--spacing-lg);
+        background: var(--bg-white);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 20px var(--shadow-color);
+        animation: fadeInUp 0.5s ease-out;
+      }
+
+      .start-title {
+        font-size: var(--font-xl);
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .start-description {
+        font-size: var(--font-md);
+        color: var(--text-light);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .start-button {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-md);
+        font-weight: 600;
+        background: var(--gradient-primary);
+        color: var(--bg-white);
+        border: none;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .start-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px var(--shadow-color);
+      }
+
+      /* Header */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--spacing-md);
+      }
+
+      .back-button {
+        width: 40px;
+        height: 40px;
+        background: var(--bg-white);
+        color: var(--primary-color);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        box-shadow: 0 2px 6px var(--shadow-color);
+        transition: all 0.3s ease;
+      }
+
+      .back-button:hover {
+        background: var(--primary-color);
+        color: var(--bg-white);
+      }
+
+      /* Word Card */
+      .word-card {
+        background: var(--bg-white);
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 4px 12px var(--shadow-color);
+        text-align: center;
+        border: 1px solid var(--secondary-color);
+      }
+
+      .current-word {
+        font-size: var(--font-xl);
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .word-progress {
+        color: var(--text-light);
+        font-size: var(--font-md);
+        font-weight: 500;
+        margin-bottom: var(--spacing-md);
+      }
+
+      .word-progress-bar {
+        height: 6px;
+        background: var(--accent-color);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--primary-color);
+        transition: width 0.5s ease;
+      }
+
+      /* Chat Container */
+      .chat-container {
+        background: var(--bg-white);
+        border-radius: var(--radius-lg);
+        padding: var(--spacing-lg);
+        box-shadow: 0 4px 12px var(--shadow-color);
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .chat-header {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        background: var(--bg-light);
+        border-radius: var(--radius-md);
+      }
+
+      .chat-header img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+      }
+
+      .chat-header h2 {
+        font-size: var(--font-lg);
+        font-weight: 600;
+        color: var(--primary-color);
+      }
+
+      .chat-header-info {
+        font-size: var(--font-sm);
+        color: var(--text-light);
+      }
+
+      .chat-messages {
+        flex: 1;
+        min-height: 250px;
+        max-height: 50vh;
+        overflow-y: auto;
+        padding: var(--spacing-md);
+        background: var(--bg-white);
+        border: 1px solid var(--accent-color);
+        border-radius: var(--radius-md);
+        scroll-behavior: smooth;
+      }
+
+      .message {
+        margin: var(--spacing-sm) 0;
+        padding: var(--spacing-md);
+        border-radius: var(--radius-md);
+        animation: messageIn 0.4s ease-out;
+        max-width: 80%;
+        font-size: var(--font-md);
+      }
+
+      .message.bot {
+        background: var(--accent-color);
+        margin-right: auto;
+        border-left: 3px solid var(--primary-color);
+      }
+
+      .message.user {
+        background: #e0f2fe;
+        margin-left: auto;
+        text-align: right;
+        border-right: 3px solid var(--secondary-color);
+      }
+
+      .typing-indicator {
+        display: flex;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+      }
+
+      .typing-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        animation: typingBounce 1s infinite;
+      }
+
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      /* Input */
+      .input-container {
+        padding: var(--spacing-md);
+        background: var(--bg-white);
+        border-radius: var(--radius-md);
+      }
+
+      .input-box {
+        display: flex;
+        gap: var(--spacing-sm);
+        border: 1px solid var(--accent-color);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-sm);
+        transition: border-color 0.3s ease;
+      }
+
+      .input-box:focus-within {
+        border-color: var(--primary-color);
+      }
+
+      #chat-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: var(--spacing-sm);
+        font-size: var(--font-md);
+        background: transparent;
+        resize: none;
+        color: var(--text-dark);
+      }
+
+      .send-btn {
+        background: var(--primary-color);
+        color: var(--bg-white);
+        border: none;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .send-btn:hover {
+        background: var(--secondary-color);
+      }
+
+      /* Controls */
+      .controls {
+        display: flex;
+        gap: var(--spacing-md);
+      }
+
+      .control-btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--bg-white);
+        color: var(--primary-color);
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 6px var(--shadow-color);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .control-btn:hover {
+        background: var(--primary-color);
+        color: var(--bg-white);
+      }
+
+      .control-btn.primary {
+        background: var(--primary-color);
+        color: var(--bg-white);
+      }
+
+      .control-btn.secondary {
+        background: var(--accent-color);
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes messageIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes typingBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-4px);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          padding: var(--spacing-md);
+        }
+        .container {
+          gap: var(--spacing-md);
+        }
+        .current-word {
+          font-size: var(--font-lg);
+        }
+        .chat-messages {
+          max-height: 40vh;
+        }
+        .controls {
+          flex-direction: column;
+          gap: var(--spacing-sm);
+        }
+        .control-btn {
+          padding: var(--spacing-md);
+          width: 100%;
+          justify-content: center;
+        }
+        .start-title {
+          font-size: var(--font-lg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="start-overlay" id="startOverlay">
+      <div class="start-content">
+        <h1 class="start-title">UNIer - Học từ vựng thông minh</h1>
+        <p class="start-description">
+          Chào mừng bạn đến với bài học từ vựng tương tác! Trò chuyện với AI
+          teacher để học từ vựng một cách thú vị và hiệu quả hơn.
+        </p>
+        <button class="start-button" onclick="startLesson()">
+          <i class="fas fa-graduation-cap"></i> Bắt đầu học
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="header">
+        <a href="#" class="back-button" id="backButton">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <div class="controls">
+          <button class="control-btn secondary" onclick="previousWord()">
+            <i class="fas fa-chevron-left"></i> Trước
+          </button>
+          <button class="control-btn primary" onclick="nextWord()">
+            Tiếp <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="word-card">
+        <div class="current-word" id="currentWord"></div>
+        <div class="word-progress" id="wordCounter"></div>
+        <div class="word-progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="chat-container">
+        <div class="chat-header">
+          <img src="https://via.placeholder.com/48" alt="UNIer Avatar" />
+          <div>
+            <h2>UNIer Teacher</h2>
+            <div class="chat-header-info">Trợ lý dạy tiếng Anh thông minh</div>
+          </div>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="input-container">
+          <div class="input-box">
+            <textarea
+              id="chat-input"
+              placeholder="Nhập câu trả lời của bạn..."
+              rows="1"
+              onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); submitAnswer(); }"
+            ></textarea>
+            <button class="send-btn" onclick="submitAnswer()">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentIndex = 0;
+      let flashcards = [];
+      const API_URL = "https://openai-proxy.daotrunghieu080210.workers.dev/";
+      let conversationHistory = [];
+      let isLessonStarted = false;
+
+      // System prompt cải tiến cho AI teacher với phong cách tự nhiên hơn
+      const systemPrompt = {
+        role: "system",
+        content: `Bạn là UNIer - trợ lý dạy tiếng Anh thông minh, vui tính và chuyên nghiệp.
+  
+  Phong cách giảng dạy:
+  - Thân thiện, gần gũi, trò chuyện tự nhiên như một người bạn
+  - Giải thích ngắn gọn, súc tích, dễ hiểu
+  - Đưa ra ví dụ thực tế, gần gũi với cuộc sống hàng ngày
+  - Khuyến khích và động viên người học một cách chân thành
+  - Sửa lỗi nhẹ nhàng, tập trung vào điểm mạnh
+  
+  Kiến thức cần đề cập khi dạy từ mới:
+  - Nghĩa tiếng Việt chính xác
+  - Phát âm chuẩn (IPA)
+  - Loại từ (noun, verb, adj,...)
+  - Ngữ cảnh phổ biến và cách sử dụng
+  - Từ đồng nghĩa/trái nghĩa
+  - Mẹo nhớ từ sáng tạo
+  
+  Lưu ý:
+  - Trả lời tự nhiên, KHÔNG theo mẫu cố định
+  - Giữ câu trả lời ngắn gọn (2-3 câu)
+  - Sử dụng emoji phù hợp tạo không khí học tập vui vẻ
+  - Đặt câu hỏi để khuyến khích người học tương tác
+  - Tạo cảm giác tò mò và hứng thú với từ đang học`,
+      };
+
+      // Load flashcards và khởi tạo
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderId = urlParams.get("id");
+
+        if (!folderId) {
+          alert("Không tìm thấy thông tin thư mục!");
+          window.location.href = "index.html";
+          return;
+        }
+
+        document.getElementById(
+          "backButton"
+        ).href = `study-options.html?id=${folderId}`;
+        const cardsData = localStorage.getItem(`flashcards_${folderId}`);
+
+        if (cardsData) {
+          flashcards = JSON.parse(cardsData);
+          showWord(0);
+        } else {
+          alert("Không có flashcard nào trong thư mục này!");
+          window.location.href = `study-options.html?id=${folderId}`;
+        }
+      });
+
+      function showWord(index) {
+        if (flashcards.length === 0) return;
+
+        currentIndex = index % flashcards.length;
+        if (currentIndex < 0) currentIndex = flashcards.length - 1;
+
+        const card = flashcards[currentIndex];
+        document.getElementById("currentWord").textContent = card.word;
+        document.getElementById("wordCounter").textContent = `${
+          currentIndex + 1
+        }/${flashcards.length}`;
+
+        // Cập nhật thanh tiến trình
+        const progressPercent = ((currentIndex + 1) / flashcards.length) * 100;
+        document.getElementById(
+          "progressFill"
+        ).style.width = `${progressPercent}%`;
+
+        if (isLessonStarted) {
+          resetChat();
+          startWordLesson();
+        }
+      }
+
+      function startLesson() {
+        document.getElementById("startOverlay").style.display = "none";
+        isLessonStarted = true;
+        startWordLesson();
+      }
+
+      function resetChat() {
+        const chatMessages = document.getElementById("chatMessages");
+        chatMessages.innerHTML = "";
+        conversationHistory = [systemPrompt];
+      }
+
+      async function startWordLesson() {
+        const word = flashcards[currentIndex].word;
+        const chatMessages = document.getElementById("chatMessages");
+
+        const prompt = `Bạn đang dạy từ vựng "${word}". Hãy giới thiệu từ này một cách tự nhiên, 
+  bao gồm nghĩa, phát âm, và cách dùng cơ bản. Tạo cảm giác thân thiện nhưng chuyên nghiệp. 
+  Kết thúc bằng một câu hỏi ngắn gọn để khuyến khích người học tương tác. Giữ câu trả lời ngắn gọn.`;
+
+        try {
+          // Show typing indicator
+          const typingDiv = document.createElement("div");
+          typingDiv.className = "message bot typing-rainbow";
+          typingDiv.innerHTML = createTypingIndicator();
+          chatMessages.appendChild(typingDiv);
+
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-4",
+              messages: [
+                ...conversationHistory,
+                { role: "user", content: prompt },
+              ],
+              temperature: 0.8,
+              max_tokens: 500,
+            }),
+          });
+
+          const data = await response.json();
+          const message = data.choices[0].message.content;
+
+          conversationHistory.push(
+            { role: "user", content: prompt },
+            { role: "assistant", content: message }
+          );
+
+          // Remove typing indicator
+          typingDiv.remove();
+
+          // Add AI message with animation
+          const messageDiv = document.createElement("div");
+          messageDiv.className = "message bot";
+          await animateTextReveal(message, messageDiv);
+          chatMessages.appendChild(messageDiv);
+
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        } catch (error) {
+          console.error("Error starting lesson:", error);
+          appendMessage("Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại.", true);
+        }
+      }
+
+      async function submitAnswer() {
+        const input = document.getElementById("chat-input");
+        const answer = input.value.trim();
+        if (!answer) return;
+
+        const chatMessages = document.getElementById("chatMessages");
+
+        // Add user message with animation
+        const userDiv = document.createElement("div");
+        userDiv.className = "message user";
+        userDiv.textContent = answer;
+        chatMessages.appendChild(userDiv);
+
+        input.value = "";
+        input.style.height = "auto";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Show typing indicator
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "message bot";
+        typingDiv.innerHTML = createTypingIndicator();
+        chatMessages.appendChild(typingDiv);
+
+        try {
+          const word = flashcards[currentIndex].word;
+          const prompt = `Học sinh đã trả lời: "${answer}" về từ "${word}".
+    
+    Hãy phản hồi một cách tự nhiên, phong cách trò chuyện. Đánh giá câu trả lời của họ, 
+    cung cấp thêm một thông tin mới về từ này, và khuyến khích họ tiếp tục tương tác bằng một 
+    câu hỏi ngắn gọn. Giữ phản hồi ngắn gọn và cá nhân hóa.`;
+
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-4",
+              messages: [
+                ...conversationHistory,
+                { role: "user", content: answer },
+                { role: "system", content: prompt },
+              ],
+              temperature: 0.8,
+              max_tokens: 500,
+            }),
+          });
+
+          const data = await response.json();
+          const message = data.choices[0].message.content;
+
+          conversationHistory.push(
+            { role: "user", content: answer },
+            { role: "assistant", content: message }
+          );
+
+          // Remove typing indicator
+          typingDiv.remove();
+
+          // Add AI response with animation
+          const aiDiv = document.createElement("div");
+          aiDiv.className = "message bot";
+          await animateTextReveal(message, aiDiv);
+          chatMessages.appendChild(aiDiv);
+
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        } catch (error) {
+          console.error("Error processing answer:", error);
+          typingDiv.remove();
+          appendMessage("Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại.", true);
+        }
+      }
+
+      function createTypingIndicator() {
+        return `
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  `;
+      }
+
+      function formatResponse(text) {
+        return text
+          .replace(/\[([^\]]+)\]/g, '<h3 class="section-title">$1</h3>')
+          .replace(
+            /\*\*([^*]+)\*\*/g,
+            '<strong class="highlight-text">$1</strong>'
+          )
+          .replace(/^>(.+)$/gm, '<div class="example-box">$1</div>')
+          .replace(/^•(.+)$/gm, '<div class="info-pill">$1</div>')
+          .replace(/\n/g, "<br>");
+      }
+
+      async function animateTextReveal(text, element) {
+        element.classList.add("typing-rainbow");
+        const formattedText = formatResponse(text);
+        element.innerHTML = formattedText;
+
+        // Add fade-in animation
+        element.style.opacity = "0";
+        element.style.transform = "translateY(10px)";
+
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        element.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+        element.style.opacity = "1";
+        element.style.transform = "translateY(0)";
+
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        element.classList.remove("typing-rainbow");
+      }
+
+      function appendMessage(content, isBot = false) {
+        const chatMessages = document.getElementById("chatMessages");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${isBot ? "bot" : "user"}`;
+        messageDiv.innerHTML = formatResponse(content);
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      function previousWord() {
+        showWord(currentIndex - 1);
+      }
+
+      function nextWord() {
+        showWord(currentIndex + 1);
+      }
+
+      // Auto-resize textarea
+      const chatInput = document.getElementById("chat-input");
+      chatInput.addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = Math.min(this.scrollHeight, 120) + "px";
+      });
+    </script>
+  </body>
+</html>

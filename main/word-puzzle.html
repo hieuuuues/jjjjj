@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Puzzle | Vocabulary Manager</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #007bff;
+        --background: #f7f9fc;
+        --card-bg: #ffffff;
+        --text-primary: #1a2a44;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+        --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        --success: #22c55e;
+        --error: #ef4444;
+        --warning: #f59e0b;
+        --light-blue: #e6f0fa;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Fira Code", Menlo, Courier, monospace;
+      }
+
+      body {
+        background: var(--background);
+        min-height: 100vh;
+        padding: 2rem;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .container {
+        max-width: 900px;
+        width: 100%;
+      }
+
+      .header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .back-button {
+        padding: 0.75rem;
+        background: var(--card-bg);
+        color: var(--primary-color);
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        transition: background 0.2s;
+        box-shadow: var(--shadow);
+      }
+
+      .back-button:hover {
+        background: var(--primary-color);
+        color: var(--card-bg);
+      }
+
+      .puzzle-container {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        text-align: center;
+        position: relative;
+      }
+
+      .puzzle-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+      }
+
+      .puzzle-meaning {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        padding: 0.5rem 1rem;
+        background: var(--light-blue);
+        border-radius: 6px;
+        display: inline-block;
+      }
+
+      .hint-btn {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: var(--primary-color);
+        color: var(--card-bg);
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .hint-btn:hover {
+        background: #0056b3;
+      }
+
+      .puzzle-area {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .word-input {
+        padding: 0.75rem;
+        font-size: 1.25rem;
+        border: 2px solid var(--border-color);
+        border-radius: 6px;
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .word-input:focus {
+        border-color: var(--primary-color);
+      }
+
+      .puzzle-controls {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: var(--card-bg);
+      }
+
+      .btn-secondary {
+        background: var(--light-blue);
+        color: var(--primary-color);
+      }
+
+      .btn-warning {
+        background: var(--warning);
+        color: var(--card-bg);
+      }
+
+      .btn:hover {
+        background: #0056b3;
+        color: var(--card-bg);
+      }
+
+      .result-message {
+        font-size: 1.25rem;
+        margin-top: 1rem;
+        display: none;
+        font-weight: 500;
+      }
+
+      .result-message.success {
+        color: var(--success);
+        display: block;
+      }
+
+      .result-message.error {
+        color: var(--error);
+        display: block;
+      }
+
+      .result-details {
+        margin-top: 1rem;
+        font-size: 1rem;
+        color: var(--text-secondary);
+        display: none;
+        background: var(--light-blue);
+        padding: 1rem;
+        border-radius: 6px;
+      }
+
+      .incorrect-letter {
+        color: var(--error);
+        font-weight: bold;
+      }
+
+      .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 6px;
+        color: var(--card-bg);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        box-shadow: var(--shadow);
+      }
+
+      .notification.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* Modal kết quả */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        max-width: 500px;
+        width: 90%;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+      }
+
+      .modal.show {
+        display: block;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -60%);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      .modal-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--success);
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-stats {
+        margin-bottom: 1.5rem;
+        text-align: left;
+      }
+
+      .modal-stats p {
+        font-size: 1.1rem;
+        margin: 0.5rem 0;
+        color: var(--text-primary);
+      }
+
+      .modal-stats strong {
+        color: var(--primary-color);
+      }
+
+      .retried-list {
+        max-height: 150px;
+        overflow-y: auto;
+        margin-bottom: 1.5rem;
+        text-align: left;
+      }
+
+      .retried-list h3 {
+        font-size: 1.2rem;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
+
+      .retried-list ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .retried-list li {
+        padding: 0.5rem;
+        background: var(--light-blue);
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .modal-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      /* Pháo hoa */
+      canvas#fireworks {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 999;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent; /* Tắt hiệu ứng tap highlight */
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1rem;
+        }
+
+        .puzzle-container {
+          padding: 1.5rem;
+        }
+
+        .word-input {
+          max-width: 90vw;
+          font-size: 1rem;
+        }
+
+        .hint-btn {
+          top: 1rem;
+          right: 1rem;
+          padding: 0.4rem 0.8rem;
+        }
+
+        .puzzle-meaning {
+          font-size: 1rem;
+          padding: 0.4rem 0.8rem;
+        }
+
+        .btn {
+          padding: 0.6rem 1.2rem;
+          font-size: 0.9rem;
+        }
+
+        .modal {
+          padding: 1.5rem;
+          width: 95%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <a href="#" class="back-button" id="backButton">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+      </div>
+
+      <div class="puzzle-container">
+        <h2 class="puzzle-title">Đoán từ</h2>
+        <div class="puzzle-meaning" id="puzzleMeaning">Loading...</div>
+        <button class="hint-btn" onclick="showHint()">Gợi ý</button>
+        <div class="puzzle-area">
+          <input
+            type="text"
+            class="word-input"
+            id="wordInput"
+            placeholder="Nhập từ của bạn"
+          />
+        </div>
+        <div class="result-message" id="resultMessage"></div>
+        <div class="result-details" id="resultDetails"></div>
+        <div class="puzzle-controls">
+          <button class="btn btn-secondary" onclick="clearInput()">
+            <i class="fas fa-eraser"></i> Xóa
+          </button>
+          <button class="btn btn-primary" onclick="checkAnswer()">
+            <i class="fas fa-check"></i> Kiểm tra
+          </button>
+          <button class="btn btn-primary" onclick="nextPuzzle()">
+            <i class="fas fa-arrow-right"></i> Tiếp theo
+          </button>
+          <button class="btn btn-warning" onclick="revealAnswer()">
+            <i class="fas fa-eye"></i> Hiển thị đáp án
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal kết quả -->
+      <div class="modal" id="resultsModal">
+        <h2 class="modal-title">Chúc mừng! 🎉</h2>
+        <div class="modal-stats">
+          <p><strong>Điểm số:</strong> <span id="finalScore"></span></p>
+          <p>
+            <strong>Thời gian trung bình:</strong>
+            <span id="averageTime"></span> giây/từ
+          </p>
+          <p><strong>Số từ làm lại:</strong> <span id="retriedCount"></span></p>
+        </div>
+        <div class="retried-list">
+          <h3>Các từ làm sai lần đầu:</h3>
+          <ul id="retriedWordsList"></ul>
+        </div>
+        <div class="modal-buttons">
+          <button class="btn btn-primary" onclick="restartGame()">
+            <i class="fas fa-redo"></i> Làm lại
+          </button>
+          <a href="#" class="btn btn-secondary" id="backToStudy">
+            <i class="fas fa-arrow-left"></i> Quay lại
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="fireworks"></canvas>
+    <div id="notification" class="notification"></div>
+
+    <!-- Audio elements -->
+    <audio
+      id="correctSound"
+      src="./Am_thanh_lua_chon_Dung-www_tiengdong_com.mp3"
+    ></audio>
+    <audio
+      id="incorrectSound"
+      src="./Am_thanh_khi_chon_nham-www_tiengdong_com.mp3"
+    ></audio>
+    <audio
+      id="fireworksSound"
+      src="./Am_thanh_khi_chon_nham-www_tiengdong_com.mp3"
+    ></audio>
+    <!-- File audio của bạn -->
+
+    <script>
+      let allWords = [];
+      let remainingWords = [];
+      let currentPuzzle = null;
+      let correctWord = "";
+      let score = 0;
+      let hintUsed = false;
+      let isAnswerChecked = false;
+      let isAnswerCorrect = false;
+      let startTime = null;
+      let totalTime = 0;
+      let completedWords = 0;
+      let retriedWords = [];
+      let firstAttemptCorrect = true;
+
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderId = urlParams.get("id");
+
+        document.getElementById(
+          "backButton"
+        ).href = `study-options.html?id=${folderId}`;
+        document.getElementById(
+          "backToStudy"
+        ).href = `study-options.html?id=${folderId}`;
+        loadWordsForFolder(folderId);
+        if (allWords.length === 0) {
+          showNotification("Chưa có từ vựng nào để chơi!", "error");
+          setTimeout(() => (window.location.href = "index.html"), 2000);
+          return;
+        }
+        remainingWords = [...allWords];
+        loadScore();
+        startTime = Date.now();
+        generatePuzzle();
+      });
+
+      function loadWordsForFolder(folderId) {
+        allWords = [];
+        const flashcards = JSON.parse(
+          localStorage.getItem(`flashcards_${folderId}`) || "[]"
+        );
+        flashcards.forEach((card) =>
+          allWords.push({ word: card.word, meaning: card.meaning })
+        );
+      }
+
+      function loadScore() {
+        score = parseInt(localStorage.getItem("puzzleScore")) || 0;
+      }
+
+      function saveScore() {
+        localStorage.setItem("puzzleScore", score);
+      }
+
+      function generatePuzzle() {
+        if (remainingWords.length === 0) {
+          showResults();
+          return;
+        }
+
+        const randomIndex = Math.floor(Math.random() * remainingWords.length);
+        currentPuzzle = remainingWords[randomIndex];
+        correctWord = currentPuzzle.word.toLowerCase();
+        hintUsed = false;
+        isAnswerChecked = false;
+        isAnswerCorrect = false;
+        firstAttemptCorrect = true;
+
+        document.getElementById("puzzleMeaning").textContent =
+          currentPuzzle.meaning;
+        document.getElementById("wordInput").value = "";
+        document.getElementById("resultMessage").style.display = "none";
+        document.getElementById("resultDetails").style.display = "none";
+      }
+
+      function highlightIncorrectLetters(userWord, correctWord) {
+        let result = "";
+        const maxLength = Math.max(userWord.length, correctWord.length);
+
+        for (let i = 0; i < maxLength; i++) {
+          const userChar = userWord[i] || "";
+          const correctChar = correctWord[i] || "";
+
+          if (userChar !== correctChar) {
+            result += `<span class="incorrect-letter">${
+              correctChar || ""
+            }</span>`;
+          } else {
+            result += correctChar;
+          }
+        }
+        return result;
+      }
+
+      function checkAnswer() {
+        const userWord = document
+          .getElementById("wordInput")
+          .value.trim()
+          .toLowerCase();
+        const resultMessage = document.getElementById("resultMessage");
+        const resultDetails = document.getElementById("resultDetails");
+        const correctSound = document.getElementById("correctSound");
+        const incorrectSound = document.getElementById("incorrectSound");
+
+        if (!userWord) {
+          resultMessage.textContent = "Vui lòng nhập từ!";
+          resultMessage.className = "result-message error";
+          resultMessage.style.display = "block";
+          incorrectSound.play();
+          return;
+        }
+
+        if (userWord === correctWord) {
+          resultMessage.textContent = "Chính xác! 🎉";
+          resultMessage.className = "result-message success";
+          resultDetails.textContent = "Bạn đã đoán đúng từ!";
+          score += hintUsed ? 5 : 10;
+          saveScore();
+          correctSound.play();
+          isAnswerCorrect = true;
+        } else {
+          resultMessage.textContent = "Sai rồi!";
+          resultMessage.className = "result-message error";
+          const highlightedWord = highlightIncorrectLetters(
+            userWord,
+            correctWord
+          );
+          resultDetails.innerHTML = `Từ đúng là: <strong>${highlightedWord}</strong>. Hãy thử lại!`;
+          incorrectSound.play();
+          isAnswerCorrect = false;
+          if (!isAnswerChecked && firstAttemptCorrect) {
+            retriedWords.push({
+              word: correctWord,
+              meaning: currentPuzzle.meaning,
+            });
+            firstAttemptCorrect = false;
+          }
+        }
+
+        resultMessage.style.display = "block";
+        resultDetails.style.display = "block";
+        isAnswerChecked = true;
+      }
+
+      function revealAnswer() {
+        const resultMessage = document.getElementById("resultMessage");
+        const resultDetails = document.getElementById("resultDetails");
+        const incorrectSound = document.getElementById("incorrectSound");
+
+        document.getElementById("wordInput").value = correctWord;
+        resultMessage.textContent = "Đáp án đã được hiển thị!";
+        resultMessage.className = "result-message warning";
+        resultMessage.style.display = "block";
+        resultDetails.style.display = "none";
+        if (!hintUsed) score = Math.max(0, score - 5);
+        saveScore();
+        incorrectSound.play();
+        isAnswerChecked = true;
+        isAnswerCorrect = true;
+        if (!isAnswerChecked && firstAttemptCorrect) {
+          retriedWords.push({
+            word: correctWord,
+            meaning: currentPuzzle.meaning,
+          });
+          firstAttemptCorrect = false;
+        }
+      }
+
+      function clearInput() {
+        document.getElementById("wordInput").value = "";
+        document.getElementById("resultMessage").style.display = "none";
+        document.getElementById("resultDetails").style.display = "none";
+        isAnswerChecked = false;
+        isAnswerCorrect = false;
+      }
+
+      function showHint() {
+        const input = document.getElementById("wordInput");
+        const currentValue = input.value.toLowerCase();
+        if (currentValue.length < correctWord.length) {
+          input.value = correctWord.slice(0, currentValue.length + 1);
+          hintUsed = true;
+          showNotification("Đã thêm một chữ cái gợi ý!", "warning");
+        } else {
+          showNotification("Không thể gợi ý thêm!", "error");
+        }
+      }
+
+      function nextPuzzle() {
+        if (isAnswerCorrect) {
+          const timeTaken = (Date.now() - startTime) / 1000;
+          totalTime += timeTaken;
+          completedWords++;
+          remainingWords = remainingWords.filter(
+            (word) => word.word.toLowerCase() !== correctWord
+          );
+          startTime = Date.now();
+        }
+        generatePuzzle();
+      }
+
+      function showResults() {
+        const averageTime = totalTime / completedWords || 0;
+        const retriedList = retriedWords
+          .map(
+            (item) =>
+              `<li><span>${item.word}</span><span>${item.meaning}</span></li>`
+          )
+          .join("");
+
+        document.getElementById("finalScore").textContent = score;
+        document.getElementById("averageTime").textContent =
+          averageTime.toFixed(2);
+        document.getElementById("retriedCount").textContent =
+          retriedWords.length;
+        document.getElementById("retriedWordsList").innerHTML =
+          retriedList || "<li>Không có</li>";
+
+        const modal = document.getElementById("resultsModal");
+        modal.classList.add("show");
+
+        launchFireworks();
+        document.getElementById("fireworksSound").play();
+      }
+
+      function restartGame() {
+        remainingWords = [...allWords];
+        score = 0;
+        totalTime = 0;
+        completedWords = 0;
+        retriedWords = [];
+        saveScore();
+        startTime = Date.now();
+        document.getElementById("resultsModal").classList.remove("show");
+        document.getElementById("fireworks").style.display = "none";
+        generatePuzzle();
+      }
+
+      function showNotification(message, type = "info") {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.style.backgroundColor =
+          type === "success"
+            ? "var(--success)"
+            : type === "error"
+            ? "var(--error)"
+            : "var(--warning)";
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 3000);
+      }
+
+      // Hiệu ứng pháo hoa bắn từ dưới lên
+      function launchFireworks() {
+        const canvas = document.getElementById("fireworks");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        canvas.style.display = "block";
+
+        const fireworks = [];
+        const particles = [];
+
+        function random(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        function Firework() {
+          this.x = random(canvas.width * 0.2, canvas.width * 0.8); // Bắn từ giữa màn hình
+          this.y = canvas.height; // Bắt đầu từ dưới
+          this.targetY = random(canvas.height * 0.1, canvas.height * 0.4); // Điểm nổ
+          this.vx = random(-1, 1); // Tốc độ ngang nhỏ
+          this.vy = random(-10, -5); // Tốc độ bắn lên
+          this.radius = 2;
+          this.color = `hsl(${random(0, 360)}, 100%, 50%)`;
+          this.exploded = false;
+        }
+
+        Firework.prototype.update = function () {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += 0.1; // Trọng lực nhẹ
+
+          if (this.y <= this.targetY && !this.exploded) {
+            this.explode();
+            this.exploded = true;
+          }
+
+          return !this.exploded || this.y < canvas.height;
+        };
+
+        Firework.prototype.explode = function () {
+          for (let i = 0; i < 50; i++) {
+            particles.push(new Particle(this.x, this.y, this.color));
+          }
+        };
+
+        Firework.prototype.draw = function () {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        };
+
+        function Particle(x, y, color) {
+          this.x = x;
+          this.y = y;
+          this.vx = random(-2, 2);
+          this.vy = random(-2, 2);
+          this.radius = random(1, 3);
+          this.color = color;
+          this.life = 0;
+          this.maxLife = random(30, 50);
+        }
+
+        Particle.prototype.update = function () {
+          this.x += this.vx;
+          this.y += this.vy;
+          this.vy += 0.1; // Trọng lực
+          this.life++;
+          this.radius *= 0.95; // Thu nhỏ dần
+          return this.life < this.maxLife;
+        };
+
+        Particle.prototype.draw = function () {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        };
+
+        function animate() {
+          ctx.fillStyle = "rgba(0, 0, 0, 0.1)"; // Làm mờ nền dần
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          if (Math.random() < 0.2 && fireworks.length < 5) {
+            fireworks.push(new Firework());
+          }
+
+          fireworks.forEach((firework, index) => {
+            if (!firework.update()) fireworks.splice(index, 1);
+            firework.draw();
+          });
+
+          particles.forEach((particle, index) => {
+            if (!particle.update()) particles.splice(index, 1);
+            particle.draw();
+          });
+
+          if (fireworks.length || particles.length) {
+            requestAnimationFrame(animate);
+          } else {
+            canvas.style.display = "none";
+          }
+        }
+
+        animate();
+      }
+
+      document.addEventListener("keydown", (e) => {
+        const wordInput = document.getElementById("wordInput");
+
+        if (e.key === "Enter") {
+          e.preventDefault();
+          if (document.activeElement === wordInput && !isAnswerChecked) {
+            checkAnswer();
+          } else if (isAnswerChecked && !isAnswerCorrect) {
+            clearInput();
+          } else if (isAnswerChecked && isAnswerCorrect) {
+            nextPuzzle();
+          }
+        }
+
+        if (document.activeElement !== wordInput) {
+          if (e.key === " ") nextPuzzle();
+          if (e.key === "r") clearInput();
+          if (e.key === "h") showHint();
+          if (e.key === "v") revealAnswer();
+        }
+      });
+    </script>
+  </body>
+</html>

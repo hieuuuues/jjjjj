@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IELTS Reading Resources</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+     :root {
+    --primary-color: #007bff;
+    --background: #f7f9fc;
+    --card-bg: #ffffff;
+    --text-primary: #1a2a44;
+    --text-secondary: #6b7280;
+    --border-color: #e5e7eb;
+    --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* Tắt hiệu ứng tap highlight */
+}
+
+body {
+    font-family: "Fira Code", Menlo, Courier, monospace;
+    background: var(--background);
+    color: var(--text-primary);
+}
+
+.header {
+    background: var(--card-bg);
+    padding: 0.75rem 1rem;
+    box-shadow: var(--shadow);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.back-btn:hover {
+    background: var(--primary-color);
+    color: var(--card-bg);
+}
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto;
+}
+
+.hamburger-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    margin: 5px 0;
+    transition: all 0.3s;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.nav-link:hover {
+    background: var(--primary-color);
+    color: var(--card-bg);
+}
+
+.main-content {
+    margin-top: 80px;
+    padding: 2rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.overview {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.overview h2 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.overview p {
+    color: var(--text-secondary);
+}
+
+.lessons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.lesson-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: box-shadow 0.2s;
+}
+
+.lesson-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-image {
+    height: 150px;
+    background: #e6f0fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.lesson-content {
+    padding: 1.5rem;
+}
+
+.lesson-content h3 {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.lesson-content p {
+    color: var(--text-secondary);
+}
+
+.lesson-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.difficulty {
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: #e6f0fa;
+    color: var(--primary-color);
+}
+
+.study-timer {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 200px;
+}
+
+.timer-display {
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.timer-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.timer-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--primary-color);
+    color: var(--card-bg);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.timer-btn:hover {
+    background: #0056b3;
+}
+
+@media screen and (max-width: 768px) {
+    .hamburger {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--card-bg);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.75rem;
+        box-shadow: var(--shadow);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .hamburger.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+    }
+
+    .hamburger.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+    }
+
+    .nav-link {
+        width: 100%;
+        text-align: left;
+        padding: 0.75rem 1rem;
+    }
+}
+    </style>
+  </body>
+  <body>
+    <header class="header">
+      <nav class="nav">
+        <a class="back-btn" href="index.html"><i class="fas fa-arrow-left"></i></a>
+
+        <button class="hamburger" aria-label="Menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+
+        <div class="nav-links">
+          <a href="#overview" class="nav-link">Overview</a>
+          <a href="#lessons" class="nav-link">Lessons</a>
+          <a href="#practice" class="nav-link">Practice Tests</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <section class="overview" id="overview">
+        <h2>IELTS Reading Overview</h2>
+        <p>
+          The IELTS Reading test assesses your ability to understand and analyze
+          written texts. You'll have 60 minutes to answer 40 questions based on
+          three passages.
+        </p>
+      </section>
+
+      <div class="lessons-grid">
+        <a href="./folder_manager.html" class="lesson-card">
+          <div class="lesson-image">📚</div>
+          <div class="lesson-content">
+            <h3>Chủ động xây dựng kho từ vựng của bạn</h3>
+            <p>
+              Learn about different types of IELTS reading questions through
+              video lectures
+            </p>
+            <div class="lesson-meta">
+              <span class="duration">45 min</span>
+              <span class="difficulty">Beginner</span>
+            </div>
+          </div>
+        </a>
+        <a href="#" class="lesson-card">
+          <div class="lesson-image">🎯</div>
+          <div class="lesson-content">
+            <h3>Học theo lộ trình cùng Smart Lex</h3>
+            <p>Build your foundation from scratch to IELTS 3.0</p>
+            <div class="lesson-meta">
+              <span class="duration">60 min</span>
+              <span class="difficulty">Basic</span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </main>
+
+    <div class="study-timer">
+      <div class="timer-display">25:00</div>
+      <div class="timer-controls">
+        <button class="timer-btn" onclick="startTimer()">Start</button>
+        <button class="timer-btn" onclick="resetTimer()">Reset</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const hamburger = document.querySelector(".hamburger");
+        const navLinks = document.querySelector(".nav-links");
+
+        hamburger.addEventListener("click", function () {
+          hamburger.classList.toggle("active");
+          navLinks.classList.toggle("active");
+        });
+
+        document.addEventListener("click", function (event) {
+          if (
+            !hamburger.contains(event.target) &&
+            !navLinks.contains(event.target)
+          ) {
+            hamburger.classList.remove("active");
+            navLinks.classList.remove("active");
+          }
+        });
+      });
+
+      let timerInterval;
+      let minutes = 25;
+      let seconds = 0;
+      const timerDisplay = document.querySelector(".timer-display");
+
+      function startTimer() {
+        if (!timerInterval) {
+          timerInterval = setInterval(updateTimer, 1000);
+          document.querySelector(".timer-controls button").textContent =
+            "Pause";
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          document.querySelector(".timer-controls button").textContent =
+            "Start";
+        }
+      }
+
+      function updateTimer() {
+        if (seconds === 0) {
+          if (minutes === 0) {
+            clearInterval(timerInterval);
+            alert("Time is up!");
+            return;
+          }
+          minutes--;
+          seconds = 59;
+        } else {
+          seconds--;
+        }
+
+        timerDisplay.textContent = `${minutes
+          .toString()
+          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      }
+
+      function resetTimer() {
+        clearInterval(timerInterval);
+        timerInterval = null;
+        minutes = 25;
+        seconds = 0;
+        timerDisplay.textContent = "25:00";
+        document.querySelector(".timer-controls button").textContent = "Start";
+      }
+    </script>
+  </body>
+</html>

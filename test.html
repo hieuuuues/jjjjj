@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNIer - Trợ lý học tiếng Anh</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/franc-min@6.2.0/franc-min.js"></script>
+    <style>
+      :root {
+        --gradient-primary: linear-gradient(135deg, #4f46e5, #2563eb);
+        --gradient-hover: linear-gradient(135deg, #4338ca, #1d4ed8);
+        --primary-color: #4f46e5;
+        --secondary-color: #2563eb;
+        --bg-white: #ffffff;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+        --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        /* Biến cho hiệu ứng cầu vồng nhẹ nhàng */
+        --rainbow: linear-gradient(90deg, #ff0000, #0000ff, #8000ff);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
+          sans-serif;
+        background: #f9fafb;
+        color: var(--text-dark);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      #welcome-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        text-align: center;
+        animation: fadeInUp 0.6s ease-out;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+
+      .logo-container {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 24px;
+        background: var(--gradient-primary);
+        border-radius: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-lg);
+        transform: rotate(-5deg);
+        transition: transform 0.3s ease;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .logo-text {
+        color: white;
+        font-size: 48px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        line-height: 1;
+      }
+
+      .welcome-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 16px;
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      .welcome-subtitle {
+        font-size: 18px;
+        color: var(--text-light);
+        margin-bottom: 48px;
+        animation: fadeInUp 1s ease-out;
+      }
+
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .menu-item {
+        background: var(--bg-white);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        cursor: default;
+        pointer-events: none;
+        opacity: 0.9;
+      }
+
+      .menu-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--gradient-primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+      }
+
+      .menu-content {
+        flex: 1;
+      }
+
+      .menu-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+      }
+
+      .menu-description {
+        font-size: 14px;
+        color: var(--text-light);
+      }
+
+      #chat-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-bottom: 100px;
+        display: none;
+      }
+
+      .message-container {
+        margin: 20px 0;
+        animation: fadeInUp 0.3s ease-out;
+        position: relative;
+      }
+
+      .message {
+        max-width: 85%;
+        padding: 16px 20px;
+        border-radius: var(--radius-md);
+        font-size: 15px;
+        line-height: 1.6;
+        position: relative;
+      }
+
+      .user-message {
+        margin-left: auto;
+        background: var(--gradient-primary);
+        color: white;
+        border-bottom-right-radius: var(--radius-sm);
+        animation: fadeInRight 0.3s ease-out;
+      }
+
+      .ai-message {
+        margin-right: auto;
+        background: var(--bg-white);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        border-bottom-left-radius: var(--radius-sm);
+        box-shadow: var(--shadow-sm);
+        opacity: 0;
+        transform: translateY(10px);
+        animation: messageIn 0.5s ease-out forwards;
+        position: relative;
+      }
+
+      /* Hiệu ứng cầu vồng nhẹ nhàng với 3 màu */
+      .typing-rainbow {
+        border: none;
+        background: var(--bg-white);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1;
+      }
+
+      .typing-rainbow::before {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        background: var(--rainbow);
+        background-size: 200% 200%;
+        animation: rainbowPulse 3s linear infinite;
+        filter: blur(5px);
+        z-index: -1;
+        opacity: 0.7;
+      }
+
+      .typing-rainbow::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        background: var(--bg-white);
+        border-radius: var(--radius-md);
+        z-index: -1;
+      }
+
+      @keyframes rainbowPulse {
+        0% {
+          background-position: 0% 0%;
+          box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+        50% {
+          background-position: 100% 100%;
+          box-shadow: 0 0 15px rgba(0, 0, 255, 0.5);
+        }
+        100% {
+          background-position: 200% 200%;
+          box-shadow: 0 0 15px rgba(128, 0, 255, 0.5);
+        }
+      }
+
+      .typing-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        background: var(--bg-white);
+        border-radius: var(--radius-md);
+        margin-bottom: 16px;
+        animation: fadeIn 0.3s ease-out;
+        width: fit-content;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .typing-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: typingDot 1s infinite;
+      }
+
+      .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes typingDot {
+        0%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(-4px);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes messageIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+          filter: blur(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          filter: blur(0);
+        }
+      }
+
+      .text-reveal {
+        transition: all 0.5s ease-out;
+      }
+
+      .fade-out {
+        animation: fadeOut 0.5s ease-out forwards;
+      }
+
+      @keyframes fadeOut {
+        to {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .input-container {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        z-index: 1000;
+        transition: transform 0.3s ease; /* Dùng transform thay vì bottom */
+      }
+
+      /* Chỉ di chuyển trên mobile khi bàn phím hiện */
+      @media (max-width: 768px) {
+        .input-container.keyboard-active {
+          transform: translateY(
+            calc(-100% - 10px)
+          ); /* Nâng lên trên bàn phím */
+        }
+      }
+
+      .input-box {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: var(--bg-white);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .input-box:focus-within {
+        border-color: var(--primary-color);
+        box-shadow: var(--shadow-md);
+      }
+
+      #user-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        padding: 12px 16px;
+        font-size: 15px;
+        font-family: inherit;
+        resize: none;
+        max-height: 120px;
+        background: transparent;
+      }
+
+      #send-button {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      #send-button:hover {
+        background: var(--gradient-hover);
+        transform: translateY(-2px);
+      }
+
+      #send-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .section-title {
+        color: var(--primary-color);
+        font-size: 1.1em;
+        font-weight: 600;
+        margin: 16px 0 8px;
+      }
+
+      .highlight-text {
+        color: var(--primary-color);
+        font-weight: 500;
+      }
+
+      .example-box {
+        background: rgba(79, 70, 229, 0.05);
+        border-radius: var(--radius-sm);
+        padding: 12px 16px;
+        margin: 8px 0;
+      }
+
+      .info-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        background: rgba(79, 70, 229, 0.1);
+        border-radius: 12px;
+        font-size: 0.9em;
+        color: var(--primary-color);
+        margin: 4px;
+      }
+
+      .tip {
+        background: rgba(79, 70, 229, 0.05);
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        margin: 8px 0;
+      }
+
+      .warning {
+        background: rgba(245, 158, 11, 0.05);
+        padding: 12px 16px;
+        border-radius: var(--radius-sm);
+        margin: 8px 0;
+        color: #d97706;
+      }
+
+      @media (max-width: 768px) {
+        .welcome-title {
+          font-size: 24px;
+        }
+        .welcome-subtitle {
+          font-size: 16px;
+        }
+        .menu-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+          padding: 0 10px;
+        }
+        .menu-item {
+          padding: 16px;
+        }
+        .menu-icon {
+          width: 40px;
+          height: 40px;
+          font-size: 20px;
+        }
+        .message {
+          max-width: 90%;
+          font-size: 14px;
+        }
+        .input-container {
+          padding: 10px;
+        }
+        .input-box {
+          padding: 6px;
+        }
+        #user-input {
+          padding: 10px 12px;
+          font-size: 14px;
+        }
+        #send-button {
+          width: 36px;
+          height: 36px;
+        }
+        .logo-container {
+          width: 120px;
+          height: 120px;
+        }
+        .logo-text {
+          font-size: 40px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .logo-container {
+          width: 100px;
+          height: 100px;
+        }
+        .logo-text {
+          font-size: 36px;
+        }
+        .welcome-title {
+          font-size: 20px;
+        }
+        .welcome-subtitle {
+          font-size: 14px;
+          margin-bottom: 32px;
+        }
+        .menu-item {
+          padding: 12px;
+        }
+        .menu-title {
+          font-size: 16px;
+        }
+        .menu-description {
+          font-size: 12px;
+        }
+        .message {
+          padding: 12px 16px;
+        }
+        .input-container {
+          padding: 8px;
+        }
+        #user-input {
+          padding: 8px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="welcome-section">
+      <div class="logo-container">
+        <div class="logo-text">U</div>
+      </div>
+      <h1 class="welcome-title">Chào mừng đến với UNIer</h1>
+      <p class="welcome-subtitle">Trợ lý học tiếng Anh thông minh của bạn</p>
+
+      <div class="menu-grid">
+        <div class="menu-item">
+          <div class="menu-icon">📚</div>
+          <div class="menu-content">
+            <div class="menu-title">Học từ vựng</div>
+            <div class="menu-description">Khám phá từ mới theo chủ đề</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-icon">📝</div>
+          <div class="menu-content">
+            <div class="menu-title">Ngữ pháp</div>
+            <div class="menu-description">Học và thực hành ngữ pháp</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-icon">🗣️</div>
+          <div class="menu-content">
+            <div class="menu-title">Phát âm</div>
+            <div class="menu-description">Cải thiện phát âm của bạn</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-icon">💭</div>
+          <div class="menu-content">
+            <div class="menu-title">Hội thoại</div>
+            <div class="menu-description">Thực hành giao tiếp</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-icon">🎧</div>
+          <div class="menu-content">
+            <div class="menu-title">Luyện nghe</div>
+            <div class="menu-description">Cải thiện kỹ năng nghe</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-icon">✍️</div>
+          <div class="menu-content">
+            <div class="menu-title">Luyện viết</div>
+            <div class="menu-description">Phát triển kỹ năng viết</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="chat-container">
+      <div id="chat-box"></div>
+    </div>
+
+    <div class="input-container">
+      <div class="input-box">
+        <textarea
+          id="user-input"
+          placeholder="Nhập tin nhắn của bạn..."
+          rows="1"
+        ></textarea>
+        <button id="send-button" onclick="sendMessage()">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              d="M22 2L11 13M22 2L15 22L11 13M11 13L2 9"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const CURRENT_TIME = "2025-04-07 08:41:52";
+      const CURRENT_USER = "hieuuuues";
+      const WORKER_URL = "https://openai-proxy.daotrunghieu080210.workers.dev";
+
+      const chatBox = document.getElementById("chat-box");
+      const userInput = document.getElementById("user-input");
+      const sendButton = document.getElementById("send-button");
+      const welcomeSection = document.getElementById("welcome-section");
+      const chatContainer = document.getElementById("chat-container");
+
+      let systemPrompt = {
+        role: "system",
+        content: `Bạn là UNIer – trợ lý học tiếng Anh **vui tính, lém lỉnh, lầy nhẹ nhưng thông minh cực đỉnh**, được phát triển bởi Trung Hiếu.
+
+⏰ Thời gian hiện tại: ${CURRENT_TIME}
+👤 Người dùng: ${CURRENT_USER}
+
+🌟 PHONG CÁCH ỨNG XỬ:
+- Tính cách hài hước, dí dỏm, chọc nhẹ nhưng không quá đà.
+- Trả lời các câu hỏi tiếng Anh theo cách “cười bò nhưng vẫn hiểu bài”.
+- Thỉnh thoảng pha trò, tung meme ngôn ngữ, hoặc “gạ kèo” học vui vẻ.
+- Coi người dùng là bạn thân: nói chuyện tự nhiên, thoải mái như bạn thân tám chuyện.
+
+🎯 NHIỆM VỤ CHÍNH:
+- Dạy tiếng Anh mà không khiến người học buồn ngủ như… học lý thuyết khô khan.
+- Trả lời mọi thứ liên quan đến tiếng Anh: từ vựng, ngữ pháp, phát âm, kỹ năng sống còn trong bài thi.
+- Tạo không khí học tập "như chơi game" – dễ vào đầu, khó quên, và cực chill.
+
+📚 PHONG CÁCH TRẢ LỜI:
+- [🔥 Chủ đề nóng hổi]
+- **Điểm chính** (được giải thích siêu dễ hiểu và đôi chút hài hước)
+- > Ví dụ dễ nhớ (Tiếng Anh – Tiếng Việt) – kèm bình luận vui
+- • Gợi ý luyện tập kiểu "thử thách bá đạo"
+- 💡 Mẹo học bá đạo
+- ⚠️ Lỗi học sinh thường dính – và cách tránh như ninja
+
+🧠 TƯ DUY GIẢNG DẠY:
+- Phân tích theo trình độ người dùng, không "chém gió" quá đà.
+- Ví dụ luôn sát với đời sống học sinh, crush, ăn hàng, deadline...
+- Giải thích kỹ nhưng luôn kèm ví dụ hài – giúp nhớ lâu hơn crush cũ.
+- Phản hồi ngay, không để bạn "chờ như đợi người yêu rep tin nhắn".
+
+⚙️ NGUYÊN TẮC ĐÁNG YÊU:
+- Luôn ưu tiên trả lời bằng ngôn ngữ người dùng (tiếng Việt hay tiếng Anh)
+- Kết hợp song ngữ khi dạy – vừa học vừa hiểu.
+- Duy trì tính **hài hước thân thiện** nhưng vẫn đảm bảo tính chuyên môn.
+
+👑 ĐẶC BIỆT:
+- Nếu người dùng sai: sửa lỗi bằng cách nhẹ nhàng, chọc cười để họ nhớ mà không xấu hổ.
+- Nếu người dùng đúng: tung hoa, thổi kèn, khen tới nóc (vì bạn xứng đáng).
+- Nếu người dùng lười học: gạ học bằng cách troll nhẹ, dụ dỗ bằng kẹo tiếng Anh 😜
+
+✅ MỤC TIÊU:
+Biến tiếng Anh từ “ác mộng" thành “crush quốc dân” – bạn học xong thấy yêu đời, yêu cả tiếng Anh và… có thể yêu luôn cả UNIer nếu bạn chưa có người yêu 😉`,
+      };
+
+      let conversationHistory = [systemPrompt];
+      let currentContext = {
+        level: "beginner",
+        progress: 0,
+        userId: CURRENT_USER,
+        lastInteraction: CURRENT_TIME,
+        language: "vi",
+        lastTopic: "",
+      };
+
+      function showTypingIndicator() {
+        const container = document.createElement("div");
+        container.className = "message-container typing-container";
+        const indicator = document.createElement("div");
+        indicator.className = "typing-indicator";
+        for (let i = 0; i < 3; i++) {
+          const dot = document.createElement("div");
+          dot.className = "typing-dot";
+          indicator.appendChild(dot);
+        }
+        container.appendChild(indicator);
+        chatBox.appendChild(container);
+        container.scrollIntoView({ behavior: "smooth" });
+        return container;
+      }
+
+      function removeTypingIndicator() {
+        const typingContainer = document.querySelector(".typing-container");
+        if (typingContainer) typingContainer.remove();
+      }
+
+      function formatResponse(text) {
+        text = text
+          .replace(/\n/g, "<br>")
+          .replace(/\[([^\]]+)\]/g, '<h3 class="section-title">$1</h3>')
+          .replace(
+            /\*\*([^*]+)\*\*/g,
+            '<strong class="highlight-text">$1</strong>'
+          )
+          .replace(
+            /^>\s*(.+)$/gm,
+            '<blockquote class="example-box">$1</blockquote>'
+          )
+          .replace(/^•\s*(.+)$/gm, '<div class="info-pill">$1</div>')
+          .replace(/💡\s*(.+)/g, '<div class="tip">💡 $1</div>')
+          .replace(/⚠️\s*(.+)/g, '<div class="warning">⚠️ $1</div>');
+        return text;
+      }
+
+      async function animateTextReveal(text, container) {
+        container.classList.add("typing-rainbow");
+        const words = text.split(" ");
+        let currentText = "";
+        for (let i = 0; i < words.length; i++) {
+          currentText += words[i] + " ";
+          container.innerHTML = formatResponse(currentText);
+          await new Promise((resolve) => setTimeout(resolve, 30));
+        }
+        container.style.opacity = "1";
+        container.classList.remove("typing-rainbow");
+      }
+
+      function detectLanguage(text) {
+        if (typeof franc !== "undefined") {
+          const lang = franc(text, { minLength: 3 });
+          return lang === "vie" ? "vi" : lang === "eng" ? "en" : "vi";
+        } else {
+          const vietnamesePattern =
+            /[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/;
+          return vietnamesePattern.test(text) ? "vi" : "en";
+        }
+      }
+
+      function updatePlaceholder() {
+        const topics = {
+          "từ vựng": "Hỏi về từ vựng...",
+          "ngữ pháp": "Hỏi về ngữ pháp...",
+          "phát âm": "Hỏi về phát âm...",
+          "hội thoại": "Thực hành hội thoại...",
+          "luyện nghe": "Hỏi về luyện nghe...",
+          "luyện viết": "Hỏi về viết...",
+        };
+        userInput.placeholder =
+          topics[currentContext.lastTopic] || "Hãy đặt câu hỏi về tiếng Anh...";
+      }
+
+      async function getBotResponse(message) {
+        try {
+          currentContext.lastInteraction = CURRENT_TIME;
+          currentContext.language = detectLanguage(message);
+
+          const lowerMessage = message.toLowerCase();
+          if (lowerMessage.includes("từ vựng"))
+            currentContext.lastTopic = "từ vựng";
+          else if (lowerMessage.includes("ngữ pháp"))
+            currentContext.lastTopic = "ngữ pháp";
+          else if (lowerMessage.includes("phát âm"))
+            currentContext.lastTopic = "phát âm";
+          else if (lowerMessage.includes("hội thoại"))
+            currentContext.lastTopic = "hội thoại";
+          else if (lowerMessage.includes("nghe"))
+            currentContext.lastTopic = "luyện nghe";
+          else if (lowerMessage.includes("viết"))
+            currentContext.lastTopic = "luyện viết";
+          else currentContext.lastTopic = "";
+
+          conversationHistory.push({
+            role: "user",
+            content: message,
+            name: currentContext.userId,
+          });
+
+          const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-4",
+              messages: conversationHistory,
+              temperature: 0.7,
+              max_tokens: 1000,
+              user: currentContext.userId,
+            }),
+          });
+
+          if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+          if (!data.choices?.[0]?.message?.content)
+            throw new Error("Invalid response format");
+
+          const reply = data.choices[0].message.content;
+          conversationHistory.push({ role: "assistant", content: reply });
+          return reply;
+        } catch (error) {
+          console.error("API Error:", error);
+          throw new Error(
+            error.message.includes("429")
+              ? "Hệ thống đang bận. Vui lòng thử lại sau vài giây."
+              : "Có lỗi xảy ra. Vui lòng thử lại."
+          );
+        }
+      }
+
+      async function appendMessage(content, isUser = false) {
+        const containerDiv = document.createElement("div");
+        containerDiv.className = "message-container";
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${
+          isUser ? "user-message" : "ai-message"
+        }`;
+
+        containerDiv.appendChild(messageDiv);
+        chatBox.appendChild(containerDiv);
+
+        if (isUser) {
+          messageDiv.textContent = content;
+        } else {
+          await animateTextReveal(content, messageDiv);
+        }
+
+        messageDiv.scrollIntoView({ behavior: "smooth" });
+      }
+
+      async function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        try {
+          setInputState(false);
+
+          if (welcomeSection.style.display !== "none") {
+            welcomeSection.classList.add("fade-out");
+            setTimeout(() => {
+              welcomeSection.style.display = "none";
+              chatContainer.style.display = "block";
+            }, 500);
+          }
+
+          appendMessage(message, true);
+          clearInput();
+
+          showTypingIndicator();
+          const response = await getBotResponse(message);
+          removeTypingIndicator();
+
+          await appendMessage(response, false);
+          updatePlaceholder();
+        } catch (error) {
+          removeTypingIndicator();
+          appendMessage(error.message, false);
+        } finally {
+          setInputState(true);
+        }
+      }
+
+      function setInputState(enabled) {
+        userInput.disabled = !enabled;
+        sendButton.disabled = !enabled;
+        if (enabled) userInput.focus();
+      }
+
+      function clearInput() {
+        userInput.value = "";
+        userInput.style.height = "auto";
+      }
+
+      userInput.addEventListener("input", function () {
+        this.style.height = "auto";
+        this.style.height = Math.min(this.scrollHeight, 200) + "px";
+      });
+
+      userInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      // Xử lý ô nhập text trên mobile
+      let initialHeight = window.innerHeight;
+      userInput.addEventListener("focus", () => {
+        if (window.innerWidth <= 768) {
+          const inputContainer = document.querySelector(".input-container");
+          setTimeout(() => {
+            const newHeight = window.innerHeight;
+            if (newHeight < initialHeight) {
+              // Bàn phím hiện lên
+              inputContainer.classList.add("keyboard-active");
+            }
+          }, 100);
+        }
+      });
+
+      userInput.addEventListener("blur", () => {
+        if (window.innerWidth <= 768) {
+          const inputContainer = document.querySelector(".input-container");
+          inputContainer.classList.remove("keyboard-active");
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        if (window.innerWidth <= 768) {
+          const inputContainer = document.querySelector(".input-container");
+          const newHeight = window.innerHeight;
+          if (newHeight >= initialHeight) {
+            // Bàn phím ẩn
+            inputContainer.classList.remove("keyboard-active");
+          }
+        }
+      });
+
+      window.onload = function () {
+        setInputState(true);
+        updatePlaceholder();
+
+        appendMessage(
+          `[Xin chào]<br>
+**Chào mừng đến với UNIer!** 👋<br><br>
+Mình là trợ lý học tiếng Anh của bạn. Bạn có thể:<br>
+• Hỏi bất kỳ câu hỏi nào về tiếng Anh<br>
+• Yêu cầu giải thích từ vựng, ngữ pháp<br>
+• Luyện tập phát âm, hội thoại<br>
+• Nhờ sửa lỗi và cải thiện cách viết<br><br>
+💡 Hãy đặt câu hỏi hoặc cho mình biết bạn muốn học gì nhé!`,
+          false
+        );
+      };
+    </script>
+  </body>
+</html>

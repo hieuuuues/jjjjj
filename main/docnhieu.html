@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vocabulary Story Weaver</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #007bff;
+        --secondary-color: #00b4ff;
+        --gradient-primary: linear-gradient(135deg, #4f46e5, #2563eb);
+        --gradient-hover: linear-gradient(135deg, #4338ca, #1d4ed8);
+        --gradient-accent: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+        --background: #f7f9fc;
+        --card-bg: #ffffff;
+        --text-primary: #1a2a44;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
+        --success: #22c55e;
+        --error: #ef4444;
+        --warning: #f59e0b;
+        --light-blue: #e6f0fa;
+        --highlight-border: 2px solid #007bff;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes iconHover {
+        0% {
+          transform: scale(1);
+          filter: brightness(100%);
+        }
+        100% {
+          transform: scale(1.2);
+          filter: brightness(120%);
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(180deg, #e6f0fa 0%, #f7f9fc 100%);
+        min-height: 100vh;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        display: flex;
+        gap: 2rem;
+      }
+
+      .sidebar {
+        width: 250px;
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+      }
+
+      .sidebar-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+      }
+
+      .sidebar-item i {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-item i:hover {
+        animation: iconHover 0.3s forwards;
+      }
+
+      .main-content {
+        flex: 1;
+        max-width: 700px;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-bottom: 2rem;
+      }
+
+      .back-button {
+        padding: 0.75rem;
+        border-radius: 50%;
+        background: var(--card-bg);
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        box-shadow: var(--shadow);
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+      }
+
+      .back-button:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: scale(1.05);
+      }
+
+      .info-panel {
+        position: fixed;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 250px;
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow);
+        z-index: 1000;
+      }
+
+      .info-panel-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .info-panel-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: var(--text-primary);
+      }
+
+      .info-panel-item i {
+        color: var(--secondary-color);
+        font-size: 1.3rem;
+        transition: all 0.3s ease;
+      }
+
+      .info-panel-item i:hover {
+        animation: iconHover 0.3s forwards;
+      }
+
+      .story-container {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .story-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: var(--gradient-accent);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+      }
+
+      .story-content,
+      .translation-content {
+        font-size: 1rem;
+        color: var(--text-primary);
+      }
+
+      .translation-content {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+        font-style: italic;
+        color: var(--text-secondary);
+      }
+
+      .vocab-word {
+        display: inline-block;
+        border: 1px dashed var(--primary-color);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: rgba(0, 123, 255, 0.05);
+      }
+
+      .vocab-word:hover {
+        background: var(--light-blue);
+        transform: scale(1.05);
+      }
+
+      .controls {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 2rem;
+      }
+
+      .mood-btn {
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--card-bg);
+        color: var(--text-primary);
+        font-weight: 500;
+        cursor: pointer;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .mood-btn.active {
+        background: var(--gradient-primary);
+        color: white;
+      }
+
+      .mood-btn:hover {
+        background: var(--gradient-hover);
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .generate-btn {
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: var(--radius-md);
+        background: var(--gradient-primary);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: var(--shadow-md);
+        transition: all 0.2s ease;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .generate-btn:hover {
+        background: var(--gradient-hover);
+        transform: translateY(-2px);
+      }
+
+      .generate-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        padding: 2rem;
+        max-height: 80vh;
+        overflow-y: auto;
+        z-index: 1000;
+        animation: scaleIn 0.3s ease-out;
+      }
+
+      .modal.active {
+        display: block;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .modal-header h2 {
+        font-size: 1.6rem;
+        color: var(--primary-color);
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+
+      .close-btn:hover {
+        color: var(--primary-color);
+      }
+
+      .modal-content {
+        font-size: 1rem;
+        color: var(--text-primary);
+      }
+
+      .modal-content strong {
+        color: var(--primary-color);
+      }
+
+      .modal-content div {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .audio-btn {
+        padding: 0.5rem;
+        border: none;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .audio-btn:hover {
+        background: var(--secondary-color);
+        transform: scale(1.1);
+      }
+
+      .footer {
+        text-align: center;
+        padding: 2rem;
+        background: var(--card-bg);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+        margin-top: 2rem;
+      }
+
+      .footer-title {
+        font-size: 1.4rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .footer-content {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .footer-content p {
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer-content i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+      }
+
+      .footer-content i:hover {
+        animation: iconHover 0.3s forwards;
+      }
+
+      .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+        border-radius: var(--radius-md);
+        color: white;
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .notification.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .notification.error {
+        background: var(--error);
+      }
+
+      .notification.success {
+        background: var(--success);
+      }
+
+      .notification.warning {
+        background: var(--warning);
+      }
+
+      @media (max-width: 1024px) {
+        .container {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          position: static;
+        }
+        .info-panel {
+          position: static;
+          width: 100%;
+          transform: none;
+          margin: 1rem 0;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 1rem;
+        }
+        .story-container {
+          padding: 1.5rem;
+        }
+        .story-title {
+          font-size: 1.4rem;
+        }
+        .story-content,
+        .translation-content {
+          font-size: 0.9rem;
+        }
+        .modal {
+          width: 90%;
+        }
+        .generate-btn,
+        .mood-btn {
+          padding: 0.5rem 1rem;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <h3 class="sidebar-title">Tính Năng Story Weaver</h3>
+        <div class="sidebar-item">
+          <i class="fas fa-book-open"></i>
+          Tạo câu chuyện từ từ vựng của bạn.
+        </div>
+        <div class="sidebar-item">
+          <i class="fas fa-headphones"></i>
+          Nghe phát âm chuẩn cho từng từ.
+        </div>
+        <div class="sidebar-item">
+          <i class="fas fa-heart"></i>
+          Chọn cảm xúc để cá nhân hóa câu chuyện.
+        </div>
+        <div class="sidebar-item">
+          <i class="fas fa-lightbulb"></i>
+          Học ngữ cảnh tự nhiên, nhớ lâu hơn.
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="header">
+          <a href="#" class="back-button" id="backButton">
+            <i class="fas fa-arrow-left"></i>
+          </a>
+        </div>
+
+        <div class="story-container">
+          <div class="story-title" id="storyTitle">Câu Chuyện Từ Vựng</div>
+          <div class="story-content" id="storyContent">
+            Chọn một cảm xúc và nhấn nút để dệt nên câu chuyện của bạn!
+          </div>
+          <div class="translation-content" id="translationContent"></div>
+        </div>
+
+        <div class="controls">
+          <button
+            class="mood-btn"
+            onclick="selectMood('happy')"
+            data-mood="happy"
+          >
+            <i class="fas fa-smile"></i> Vui Vẻ
+          </button>
+          <button class="mood-btn" onclick="selectMood('sad')" data-mood="sad">
+            <i class="fas fa-frown"></i> Buồn
+          </button>
+          <button
+            class="mood-btn"
+            onclick="selectMood('adventure')"
+            data-mood="adventure"
+          >
+            <i class="fas fa-map"></i> Phiêu Lưu
+          </button>
+          <button
+            class="mood-btn"
+            onclick="selectMood('romantic')"
+            data-mood="romantic"
+          >
+            <i class="fas fa-heart"></i> Lãng Mạn
+          </button>
+          <button class="generate-btn" onclick="generateStory()" disabled>
+            <i class="fas fa-magic"></i> Dệt Câu Chuyện Mới
+          </button>
+        </div>
+
+        <div class="footer">
+          <h2 class="footer-title">Học Qua Câu Chuyện</h2>
+          <div class="footer-content">
+            <p>
+              <i class="fas fa-book"></i> Chọn cảm xúc yêu thích để tạo câu
+              chuyện độc đáo.
+            </p>
+            <p>
+              <i class="fas fa-brain"></i> Học từ vựng trong ngữ cảnh giúp ghi
+              nhớ sâu hơn.
+            </p>
+            <p>
+              <i class="fas fa-star"></i> Nhấn vào từ để xem nghĩa, đồng/trái
+              nghĩa chi tiết.
+            </p>
+          </div>
+        </div>
+
+        <div class="modal" id="wordModal">
+          <div class="modal-header">
+            <h2 id="modalWord"></h2>
+            <button class="close-btn" onclick="closeModal()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-content" id="modalContent"></div>
+        </div>
+      </div>
+
+      <div class="info-panel">
+        <h3 class="info-panel-title">Lợi Ích Của Story Weaver</h3>
+        <div class="info-panel-item">
+          <i class="fas fa-memory"></i>
+          Ghi nhớ từ vựng qua ngữ cảnh sinh động.
+        </div>
+        <div class="info-panel-item">
+          <i class="fas fa-pen-fancy"></i>
+          Tăng khả năng sử dụng từ tự nhiên.
+        </div>
+        <div class="info-panel-item">
+          <i class="fas fa-smile"></i>
+          Học tập thú vị với câu chuyện cảm xúc.
+        </div>
+      </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+      const API_URL = "https://openai-proxy.daotrunghieu080210.workers.dev/";
+      let flashcards = [];
+      let selectedMood = "";
+
+      function showNotification(message, type = "info") {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.className = `notification ${type} show`;
+        setTimeout(() => notification.classList.remove("show"), 3000);
+      }
+
+      // Hàm làm sạch từ vựng để sử dụng trong RegExp
+      function cleanWordForRegex(word) {
+        // Loại bỏ IPA, nghĩa, và ký tự đặc biệt
+        const cleanWord = word
+          .split(/\/| - /)[0] // Loại bỏ phần sau dấu / hoặc -
+          .trim()
+          .replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // Thoát ký tự đặc biệt
+        return cleanWord;
+      }
+
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const folderId = urlParams.get("id");
+
+        if (!folderId) {
+          showNotification("Không tìm thấy thông tin thư mục!", "error");
+          setTimeout(() => (window.location.href = "index.html"), 2000);
+          return;
+        }
+
+        document.getElementById(
+          "backButton"
+        ).href = `study-options.html?id=${folderId}`;
+        const cardsData = localStorage.getItem(`flashcards_${folderId}`);
+        if (cardsData) {
+          flashcards = JSON.parse(cardsData);
+          if (flashcards.length === 0) {
+            showNotification(
+              "Không có từ vựng nào để tạo câu chuyện!",
+              "warning"
+            );
+            document.getElementById("storyContent").innerHTML =
+              "Hãy thêm từ vựng trước nhé!";
+            document.querySelector(".generate-btn").disabled = true;
+          }
+        } else {
+          showNotification("Không tìm thấy dữ liệu từ vựng!", "error");
+          setTimeout(
+            () => (window.location.href = `study-options.html?id=${folderId}`),
+            2000
+          );
+        }
+      });
+
+      function selectMood(mood) {
+        selectedMood = mood;
+        document.querySelectorAll(".mood-btn").forEach((btn) => {
+          btn.classList.remove("active");
+          if (btn.dataset.mood === mood) btn.classList.add("active");
+        });
+        document.querySelector(".generate-btn").disabled = false;
+      }
+
+      async function generateStory() {
+        if (flashcards.length === 0 || !selectedMood) {
+          showNotification(
+            "Vui lòng chọn cảm xúc và đảm bảo có từ vựng!",
+            "warning"
+          );
+          return;
+        }
+
+        const generateBtn = document.querySelector(".generate-btn");
+        generateBtn.disabled = true;
+        generateBtn.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Đang dệt...';
+
+        const words = flashcards
+          .map((card) => cleanWordForRegex(card.word))
+          .join(", ");
+        console.log(
+          "Generating story with words:",
+          words,
+          "Mood:",
+          selectedMood
+        );
+
+        try {
+          // Tạo đoạn văn tiếng Anh
+          const storyResponse = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-3.5-turbo",
+              messages: [
+                {
+                  role: "user",
+                  content: `Create a short, simple English paragraph (4-6 sentences) using all of these words: ${words}. The tone should be ${selectedMood}. Ensure each word is used naturally in context.`,
+                },
+              ],
+              max_tokens: 200,
+            }),
+          });
+
+          if (!storyResponse.ok) {
+            throw new Error(
+              `Lỗi API tạo đoạn văn: ${storyResponse.statusText}`
+            );
+          }
+
+          const storyData = await storyResponse.json();
+          console.log("Story API response:", storyData);
+          const paragraph = storyData.choices?.[0]?.message?.content?.trim();
+          if (!paragraph) {
+            throw new Error("Không nhận được đoạn văn từ API");
+          }
+
+          // Dịch đoạn văn sang tiếng Việt
+          const translationResponse = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-3.5-turbo",
+              messages: [
+                {
+                  role: "user",
+                  content: `Translate the following English paragraph to Vietnamese: "${paragraph}"`,
+                },
+              ],
+              max_tokens: 200,
+            }),
+          });
+
+          if (!translationResponse.ok) {
+            throw new Error(
+              `Lỗi API dịch đoạn văn: ${translationResponse.statusText}`
+            );
+          }
+
+          const translationData = await translationResponse.json();
+          console.log("Translation API response:", translationData);
+          const translation =
+            translationData.choices?.[0]?.message?.content?.trim();
+          if (!translation) {
+            throw new Error("Không nhận được bản dịch từ API");
+          }
+
+          // Bao bọc các từ vựng trong đoạn văn tiếng Anh
+          let highlightedParagraph = paragraph;
+          flashcards.forEach((card) => {
+            try {
+              const cleanWord = cleanWordForRegex(card.word);
+              const regex = new RegExp(`\\b${cleanWord}\\b`, "gi");
+              highlightedParagraph = highlightedParagraph.replace(
+                regex,
+                `<span class="vocab-word" onclick="showWordDetails('${cleanWord}')">${cleanWord}</span>`
+              );
+            } catch (error) {
+              console.warn(
+                `Bỏ qua từ "${card.word}" do lỗi RegExp:`,
+                error.message
+              );
+            }
+          });
+
+          // In đậm các từ vựng trong bản dịch
+          let highlightedTranslation = translation;
+          flashcards.forEach((card) => {
+            try {
+              const vietnameseWord = card.meaning.split(",")[0].trim();
+              const regex = new RegExp(`\\b${vietnameseWord}\\b`, "gi");
+              highlightedTranslation = highlightedTranslation.replace(
+                regex,
+                `<strong>${vietnameseWord}</strong>`
+              );
+            } catch (error) {
+              console.warn(
+                `Bỏ qua nghĩa "${card.meaning}" do lỗi RegExp:`,
+                error.message
+              );
+            }
+          });
+
+          document.getElementById("storyContent").innerHTML =
+            highlightedParagraph;
+          document.getElementById("translationContent").innerHTML = `
+            <strong>Bản dịch:</strong> ${highlightedTranslation}
+          `;
+          document.getElementById("storyTitle").textContent = `Câu Chuyện ${
+            selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1)
+          }`;
+          showNotification("Câu chuyện đã được tạo thành công!", "success");
+        } catch (error) {
+          console.error("Lỗi khi tạo câu chuyện:", error);
+          document.getElementById("storyContent").innerHTML =
+            "Lỗi khi tạo câu chuyện! Vui lòng thử lại.";
+          document.getElementById("translationContent").innerHTML = "";
+          showNotification(`Lỗi: ${error.message}`, "error");
+        } finally {
+          generateBtn.disabled = false;
+          generateBtn.innerHTML =
+            '<i class="fas fa-magic"></i> Dệt Câu Chuyện Mới';
+        }
+      }
+
+      async function showWordDetails(word) {
+        const modal = document.getElementById("wordModal");
+        const modalWord = document.getElementById("modalWord");
+        const modalContent = document.getElementById("modalContent");
+
+        modalWord.textContent = word;
+        modalContent.innerHTML = "<div>Đang tải...</div>";
+        modal.classList.add("active");
+
+        const card = flashcards.find(
+          (c) => cleanWordForRegex(c.word).toLowerCase() === word.toLowerCase()
+        );
+
+        try {
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-3.5-turbo",
+              messages: [
+                {
+                  role: "user",
+                  content: `Provide synonyms and antonyms for the word "${word}" in English. Format the response as:
+                  Synonyms: word1, word2, word3
+                  Antonyms: word1, word2, word3
+                  If there are no synonyms or antonyms, say "None"`,
+                },
+              ],
+              max_tokens: 100,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`Lỗi API từ điển: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          console.log("Dictionary API response:", data);
+          const details = data.choices?.[0]?.message?.content?.trim();
+          if (!details) {
+            throw new Error("Không nhận được dữ liệu từ điển");
+          }
+
+          modalContent.innerHTML = `
+            <div><strong>Nghĩa:</strong> ${
+              card?.meaning || "Không có nghĩa"
+            }</div>
+            <div>
+              <strong>Phiên âm:</strong> ${card?.ipa || "Không có IPA"}
+              <button class="audio-btn" onclick="playAudio('${word}')">
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+            <div><strong>Đồng nghĩa:</strong> ${
+              details.match(/Synonyms: (.*)/)?.[1] || "None"
+            }</div>
+            <div><strong>Trái nghĩa:</strong> ${
+              details.match(/Antonyms: (.*)/)?.[1] || "None"
+            }</div>
+          `;
+        } catch (error) {
+          console.error("Lỗi khi tải thông tin từ:", error);
+          modalContent.innerHTML =
+            "<div>Lỗi khi tải thông tin! Vui lòng thử lại.</div>";
+          showNotification(`Lỗi: ${error.message}`, "error");
+        }
+      }
+
+      function playAudio(word) {
+        try {
+          const utterance = new SpeechSynthesisUtterance(word);
+          utterance.lang = "en-US";
+          speechSynthesis.speak(utterance);
+        } catch (error) {
+          console.error("Lỗi khi phát âm thanh:", error);
+          showNotification("Lỗi khi phát âm thanh!", "error");
+        }
+      }
+
+      function closeModal() {
+        document.getElementById("wordModal").classList.remove("active");
+      }
+
+      document.addEventListener("click", (e) => {
+        const modal = document.getElementById("wordModal");
+        if (
+          modal.classList.contains("active") &&
+          !modal.contains(e.target) &&
+          !e.target.classList.contains("vocab-word")
+        ) {
+          closeModal();
+        }
+      });
+    </script>
+  </body>
+</html>

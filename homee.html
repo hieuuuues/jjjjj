@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Estudy</title>
+    <style>
+      /* font cố định cho cả trang */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      }
+      .header {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 70px; /* Chiều cao cố định của header */
+        box-shadow: 0 5px 35px rgba(0, 0, 0, 0.4);
+      }
+      /* font cố định  */
+      .logo-container {
+        display: flex;
+        gap: 20px; /* Khoảng cách giữa hai hình ảnh */
+        align-items: center; /* Căn giữa các hình ảnh theo chiều dọc */
+      }
+
+      .logo-container img {
+        display: inline-block;
+        max-height: 100px; /* Giới hạn chiều cao của logo trong header */
+        width: 100px; /* Duy trì tỷ lệ khung hình */
+      }
+
+      .nav {
+        display: flex;
+        gap: 25px;
+      }
+
+      .nav-item {
+        position: relative;
+      }
+
+      .nav-item > a {
+        text-decoration: none;
+        color: #000000;
+        padding: 8px 12px;
+        font-size: 16px;
+        font-weight: 500;
+        display: block;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-item > a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #38b6ff;
+        transition: width 0.4s ease;
+      }
+
+      .nav-item:hover > a::after {
+        width: 100%;
+      }
+
+      .dropdown {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #ffffff;
+        border-radius: 5px;
+        overflow: hidden;
+        min-width: 180px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        transition: visibility 0.3s, opacity 0.3s ease;
+      }
+
+      .dropdown a {
+        color: #38b6ff;
+        padding: 10px 15px;
+        display: block;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdown a:hover {
+        background-color: #0c3247;
+      }
+
+      .nav-item:hover .dropdown {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .logout-button {
+        background-color: #e74c3c;
+        color: #ecf0f1;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        margin-right: 100px;
+      }
+
+      .logout-button:hover {
+        background-color: #c0392b;
+      }
+      .x {
+        color: #c0392b;
+        margin-right: 15px;
+      }
+      .ok1 {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+
+        background-color: #37b1cf;
+        margin-top: 100px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 40px;
+      }
+
+      .content {
+        flex: 1 1 400px;
+      }
+
+      .content h1 {
+        color: #38b6ff;
+        font-size: 36px;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .content p {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+
+      .features {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      .features li {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .features li::before {
+        content: "✔";
+        color: #38b6ff;
+        margin-right: 10px;
+      }
+
+      .button {
+        background-color: #38b6ff;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        margin-top: 20px;
+        display: inline-block;
+      }
+
+      .button:hover {
+        background-color: #22a1eb;
+      }
+
+      .images {
+        flex: 1 1 400px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+      }
+
+      .images img {
+        width: calc(50% - 10px);
+        height: auto;
+        border-radius: 10px;
+      }
+      .container2 {
+        display: flex;
+        width: 1100px;
+        height: 600px;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-radius: 80px;
+        overflow: hidden;
+        margin-left: 20%;
+        box-shadow: 0 5px 35px rgba(0, 0, 0, 0.4);
+        margin-top: 100px;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 20%;
+        background: #f0f8ff;
+        padding: 30px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        border-right: 1px solid #e0e0e0;
+      }
+
+      .tab-button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px;
+        font-size: 16px;
+        background: #ffffff;
+        border: none;
+        border-radius: 80px;
+        text-align: left;
+        color: #333;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .tab-button.active {
+        background: #007bff;
+        color: #ffffff;
+      }
+
+      .tab-button:hover {
+        background: #007bff;
+        color: #ffffff;
+      }
+
+      .icon {
+        font-size: 20px;
+      }
+
+      /* Nội dung */
+      .content2 {
+        flex: 1;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .tab-content img {
+        width: 100%;
+        max-width: 500px;
+        margin-top: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      /* Phần CSS hiện tại vẫn giữ nguyên */
+
+      /* Responsive tối ưu cho điện thoại */
+
+      .x2 {
+        margin-bottom: 10px;
+      }
+      .footer1 {
+        display: flex;
+        justify-content: center;
+        font-family: Arial, sans-serif;
+        padding-top: 30px;
+        border-style: 1px solid;
+
+        border-bottom: #000;
+        border-left: #000;
+        border-right: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo-container">
+        <img class="x2" src="./Estudy (1).png" alt="H Pe" />
+        <h1 class="x">X</h1>
+        <img
+          src="https://www.izone.edu.vn/wp-content/themes/izone-v2/assets/logos/izone-logo-color.png"
+          alt="IZONE"
+        />
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <!-- Content Section -->
+        <div class="content">
+          <h1>Estudy</h1>
+          <p>Website ôn luyện IELTS hợp tác với trung tâm Izone</p>
+          <ul class="features">
+            <li>Luyện tập reading và listening</li>
+            <li>Thiết kế theo font đề thi IELTS trên máy tính</li>
+            <li>Học từ vựng khi chơi game</li>
+            <li>Tài liệu đạt chuẩn, được kiểm định bởi giảng viên Izone</li>
+          </ul>
+          <a href="intro.html" class="button">Liên hệ với chúng tôi</a>
+        </div>
+
+        <!-- Images Section -->
+      </div>
+    </main>
+    <div class="container2">
+      <div class="sidebar">
+        <button class="tab-button active" data-tab="pronunciation">
+          <span class="icon">🎧</span> Listening
+        </button>
+        <button class="tab-button" data-tab="intonation">
+          <span class="icon">📚</span> Reading
+        </button>
+        <button class="tab-button" data-tab="fluency">
+          <span class="icon">✏️</span> Grammar
+        </button>
+        <button class="tab-button" data-tab="grammar">
+          <span class="icon">📚</span> Ngữ pháp
+        </button>
+        <button class="tab-button" data-tab="vocabulary">
+          <span class="icon">🔤</span> Từ vựng
+        </button>
+        <button class="tab-button" data-tab="grammar">
+          <span class="icon">🎮</span> Game
+        </button>
+      </div>
+      <div class="content2">
+        <div id="pronunciation" class="tab-content active">
+          <h2>Phát âm</h2>
+          <p>
+            Sửa lỗi sai phát âm ngay tức thì, giúp bạn nói tiếng Anh tự tin và
+            rõ ràng.
+          </p>
+          <img src="snapedit_1734009085176.png" alt="Phát âm" />
+        </div>
+        <div id="intonation" class="tab-content">
+          <h2>Ngữ điệu</h2>
+          <p>Nhận xét về ngữ điệu để bạn truyền tải cảm xúc tốt hơn.</p>
+          <img src="snapedit_1734069672817.png" alt="Ngữ điệu" />
+        </div>
+        <div id="fluency" class="tab-content">
+          <h2>Sự lưu loát</h2>
+          <p>Cải thiện sự lưu loát để bạn nói trôi chảy hơn.</p>
+          <img src="Untitled-2-01.png" alt="Sự lưu loát" />
+        </div>
+        <div id="grammar" class="tab-content">
+          <h2>Ngữ pháp</h2>
+          <p>Kiểm tra và sửa lỗi ngữ pháp khi nói.</p>
+          <img src="hpe.png" alt="Ngữ pháp" />
+        </div>
+        <div id="vocabulary" class="tab-content">
+          <h2>Từ vựng</h2>
+          <p>Phát triển từ vựng để cải thiện khả năng giao tiếp.</p>
+          <img src="vocabulary.png" alt="Từ vựng" />
+        </div>
+      </div>
+    </div>
+    <footer class="footer1">
+      <p>Ban quyen boi Estudy x Izone</p>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const buttons = document.querySelectorAll(".tab-button");
+        const contents = document.querySelectorAll(".tab-content");
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", () => {
+            // Remove active class from all buttons and contents
+            buttons.forEach((btn) => btn.classList.remove("active"));
+            contents.forEach((content) => content.classList.remove("active"));
+
+            // Add active class to clicked button and corresponding content
+            button.classList.add("active");
+            const target = document.getElementById(button.dataset.tab);
+            target.classList.add("active");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

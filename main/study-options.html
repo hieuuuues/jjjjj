@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chọn Phương Pháp Học | Vocabulary Manager</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #60a5fa; /* Light blue */
+        --secondary-color: #2563eb; /* Darker blue */
+        --background: #f0f4f8; /* Light gray-blue background */
+        --card-bg: #ffffff; /* White cards */
+        --text-primary: #1e293b; /* Dark text */
+        --text-secondary: #64748b; /* Gray text */
+        --shadow: 0 8px 30px rgba(0, 0, 0, 0.08); /* Bolder shadow */
+        --success: #22c55e; /* Green for success */
+        --error: #ef4444; /* Red for errors */
+        --warning: #f59e0b; /* Orange for warnings */
+        --border-color: #e2e8f0; /* Light border */
+        --light-blue: rgba(96, 165, 250, 0.2); /* Subtle blue background */
+        --gradient-primary: linear-gradient(
+          135deg,
+          #60a5fa,
+          #2563eb
+        ); /* Gradient */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.95);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes iconPulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.15);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--text-primary);
+        min-height: 100vh;
+        padding: 2rem;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .header {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .back-button {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--card-bg);
+        color: var(--primary-color);
+        text-decoration: none;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+      }
+
+      .back-button:hover {
+        background: var(--gradient-primary);
+        color: var(--card-bg);
+        transform: scale(1.1);
+      }
+
+      .back-button i {
+        font-size: 1.3rem;
+      }
+
+      .folder-info {
+        background: var(--card-bg);
+        padding: 1.75rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 2rem;
+        border: 2px solid transparent;
+        background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+          var(--gradient-primary) border-box;
+        box-shadow: var(--shadow);
+        animation: scaleIn 0.3s ease-out;
+      }
+
+      .folder-info h2 {
+        color: var(--primary-color);
+        margin-bottom: 0.75rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+      }
+
+      .folder-stats {
+        display: flex;
+        gap: 1.5rem;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .folder-stats span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .folder-stats i {
+        color: var(--primary-color);
+        font-size: 1rem;
+      }
+
+      .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .study-option {
+        background: var(--card-bg);
+        border-radius: var(--radius-md);
+        padding: 2rem;
+        text-align: center;
+        border: 2px solid var(--border-color);
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .study-option:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+        border: 2px solid transparent;
+        background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+          var(--gradient-primary) border-box;
+      }
+
+      .option-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1.25rem;
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+      }
+
+      .study-option:hover .option-icon {
+        color: var(--secondary-color);
+        animation: iconPulse 0.5s ease-in-out;
+      }
+
+      .option-title {
+        font-size: 1.35rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: var(--primary-color);
+      }
+
+      .option-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 1.25rem;
+        }
+
+        .header {
+          margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+          grid-template-columns: 1fr;
+          gap: 1.25rem;
+        }
+
+        .study-option {
+          padding: 1.5rem;
+        }
+
+        .option-icon {
+          font-size: 2.25rem;
+        }
+
+        .option-title {
+          font-size: 1.2rem;
+        }
+
+        .option-description {
+          font-size: 0.9rem;
+        }
+
+        .folder-info {
+          padding: 1.25rem;
+        }
+
+        .folder-info h2 {
+          font-size: 1.5rem;
+        }
+
+        .folder-stats {
+          flex-direction: column;
+          gap: 0.75rem;
+          font-size: 0.9rem;
+        }
+
+        .back-button {
+          width: 40px;
+          height: 40px;
+        }
+
+        .back-button i {
+          font-size: 1.1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        body {
+          padding: 1rem;
+        }
+
+        .folder-info h2 {
+          font-size: 1.25rem;
+        }
+
+        .folder-stats {
+          font-size: 0.85rem;
+        }
+
+        .study-option {
+          padding: 1.25rem;
+        }
+
+        .option-icon {
+          font-size: 2rem;
+        }
+
+        .option-title {
+          font-size: 1.1rem;
+        }
+
+        .option-description {
+          font-size: 0.85rem;
+        }
+
+        .back-button {
+          width: 36px;
+          height: 36px;
+        }
+
+        .back-button i {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <a href="vocabulary.html" class="back-button">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+      </div>
+
+      <div class="folder-info">
+        <h2 id="folderName">Loading...</h2>
+        <div class="folder-stats">
+          <span
+            ><i class="fas fa-book"></i>
+            <span id="wordCount">Số từ: ...</span></span
+          >
+          <span
+            ><i class="fas fa-clock"></i>
+            <span id="lastReviewed">Lần ôn tập cuối: ...</span></span
+          >
+        </div>
+      </div>
+
+      <div class="options-grid">
+        <div class="study-option" onclick="navigateToStudy('flashcards')">
+          <i class="fas fa-clone option-icon"></i>
+          <h3 class="option-title">Flashcards</h3>
+          <p class="option-description">
+            Học với thẻ ghi nhớ. Xem từ vựng và nghĩa, kèm hình ảnh và âm thanh.
+          </p>
+        </div>
+
+        <div class="study-option" onclick="navigateToStudy('quiz')">
+          <i class="fas fa-list-check option-icon"></i>
+          <h3 class="option-title">Trắc nghiệm</h3>
+          <p class="option-description">
+            Kiểm tra kiến thức với các câu hỏi trắc nghiệm về từ vựng.
+          </p>
+        </div>
+
+        <div class="study-option" onclick="navigateToStudy('matching')">
+          <i class="fas fa-puzzle-piece option-icon"></i>
+          <h3 class="option-title">Ghép cặp</h3>
+          <p class="option-description">
+            Ghép các từ vựng với nghĩa tương ứng của chúng.
+          </p>
+        </div>
+
+        <div class="study-option" onclick="navigateToStudy('writing')">
+          <i class="fas fa-pen option-icon"></i>
+          <h3 class="option-title">Luyện viết</h3>
+          <p class="option-description">
+            Thực hành viết các từ vựng dựa trên nghĩa cho trước.
+          </p>
+        </div>
+
+        <div class="study-option" onclick="navigateToStudy('review')">
+          <i class="fas fa-trophy option-icon"></i>
+          <h3 class="option-title">Tổng ôn</h3>
+          <p class="option-description">Ôn tập toàn bộ từ vựng từ Day 1-7.</p>
+        </div>
+
+        <div class="study-option" onclick="navigateToStudy('listening')">
+          <i class="fas fa-headphones option-icon"></i>
+          <h3 class="option-title">Luyện nghe</h3>
+          <p class="option-description">
+            Nghe phát âm và chọn từ vựng chính xác.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentFolderId = null;
+
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        currentFolderId = urlParams.get("id");
+
+        if (!currentFolderId) {
+          alert("Không tìm thấy thông tin thư mục!");
+          window.location.href = "index.html";
+          return;
+        }
+
+        const hasFlashcards = localStorage.getItem(
+          `flashcards_${currentFolderId}`
+        );
+        if (!hasFlashcards) {
+          alert("Vui lòng nhập từ vựng trước khi học!");
+          window.location.href = `vocabulary-input.html?id=${currentFolderId}`;
+          return;
+        }
+
+        loadFolderInfo();
+      });
+
+      function loadFolderInfo() {
+        const folders = JSON.parse(localStorage.getItem("vocabularyFolders"));
+        let folder = null;
+
+        for (let i = 1; i <= 7; i++) {
+          const foundFolder = folders[`day${i}`].find(
+            (f) => f.id === parseInt(currentFolderId)
+          );
+          if (foundFolder) {
+            folder = foundFolder;
+            break;
+          }
+        }
+
+        if (folder) {
+          document.getElementById("folderName").textContent = folder.name;
+          document.getElementById("wordCount").textContent = `Số từ: ${
+            folder.wordCount || 0
+          }`;
+          document.getElementById(
+            "lastReviewed"
+          ).textContent = `Lần ôn tập cuối: ${
+            folder.lastReviewed || "Chưa ôn tập"
+          }`;
+        }
+      }
+
+      function navigateToStudy(mode) {
+        const pages = {
+          flashcards: "flashcards.html",
+          quiz: "quiz.html",
+          matching: "word-puzzle.html",
+          writing: "sentence-builder.html",
+          review: "review.html",
+          listening: "docnhieu.html",
+        };
+
+        const page = pages[mode];
+        if (page) {
+          window.location.href = `${page}?id=${currentFolderId}&mode=${mode}`;
+        }
+      }
+    </script>
+  </body>
+</html>

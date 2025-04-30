@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tìm kiếm từ trong video YouTube</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      input[type="text"] {
+        padding: 10px;
+        width: 60%;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      #results {
+        margin-top: 20px;
+      }
+      #player {
+        margin-top: 20px;
+      }
+      .video-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+      .video-info img {
+        width: 120px;
+        height: 90px;
+        margin-right: 10px;
+        border-radius: 4px;
+      }
+      .transcript-container {
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #fff;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-top: 10px;
+        text-align: left;
+      }
+      .transcript-item {
+        margin: 5px 0;
+        font-size: 14px;
+      }
+      .highlight {
+        background-color: yellow;
+        font-weight: bold;
+      }
+      .loading {
+        font-style: italic;
+        color: #555;
+      }
+      .error {
+        color: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Tìm kiếm từ trong video YouTube</h1>
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Nhập từ khóa (VD: hello)"
+      />
+      <button onclick="searchVideos()">Tìm kiếm</button>
+      <div id="results"></div>
+      <div id="player"></div>
+      <div id="transcript" class="transcript-container"></div>
+    </div>
+
+    <script src="https://unpkg.com/youtube-transcript-api@0.5.0/dist/index.min.js"></script>
+    <script>
+      const apiKey = "AIzaSyDYYUonsOGUolJwzvS1Xe1E4xbFD3oADnw"; // Thay bằng API Key của bạn
+      const resultsDiv = document.getElementById("results");
+      const playerDiv = document.getElementById("player");
+      const transcriptDiv = document.getElementById("transcript");
+      let videos = []; // Lưu danh sách video
+      let currentVideoIndex = 0; // Chỉ số video hiện tại
+      let fullTranscript = []; // Lưu toàn bộ transcript của video
+      let timestamps = []; // Lưu danh sách thời điểm của từ trong video
+
+      async function searchVideos() {
+        const query = document.getElementById("searchInput").value.trim();
+        if (!query) {
+          alert("Vui lòng nhập từ khóa!");
+          return;
+        }
+
+        // Hiển thị trạng thái đang tải
+        resultsDiv.innerHTML = '<p class="loading">Đang tìm kiếm video...</p>';
+        playerDiv.innerHTML = "";
+        transcriptDiv.innerHTML = "";
+        videos = [];
+        currentVideoIndex = 0;
+        timestamps = [];
+        fullTranscript = [];
+
+        // Gọi YouTube API để tìm kiếm video
+        try {
+          const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&maxResults=5&key=${apiKey}&type=video`
+          );
+          const data = await response.json();
+
+          if (data.error) {
+            resultsDiv.innerHTML = `<p class="error">Lỗi: ${data.error.message} (Kiểm tra API Key hoặc quota)</p>`;
+            return;
+          }
+
+          if (data.items && data.items.length > 0) {
+            videos = data.items;
+            await processVideo(0, query); // Xử lý video đầu tiên
+          } else {
+            resultsDiv.innerHTML =
+              '<p class="error">Không tìm thấy video nào!</p>';
+          }
+        } catch (error) {
+          resultsDiv.innerHTML = `<p class="error">Lỗi khi tìm kiếm video: ${error.message}</p>`;
+        }
+      }
+
+      async function processVideo(index, word) {
+        if (index >= videos.length) {
+          resultsDiv.innerHTML =
+            '<p class="error">Không còn video nào để hiển thị!</p>';
+          return;
+        }
+
+        const videoId = videos[index].id.videoId;
+        const title = videos[index].snippet.title;
+        const thumbnail = videos[index].snippet.thumbnails.medium.url;
+        currentVideoIndex = index;
+
+        // Hiển thị thông tin video
+        resultsDiv.innerHTML = `
+                <div class="video-info">
+                    <img src="${thumbnail}" alt="${title}">
+                    <div>
+                        <h3>${title}</h3>
+                        <p class="loading">Đang tìm từ "${word}" trong video...</p>
+                    </div>
+                </div>
+            `;
+
+        // Lấy transcript của video
+        try {
+          const transcriptApi = new YouTubeTranscriptApi();
+          fullTranscript = await transcriptApi.getTranscript(videoId);
+
+          // Tìm từ trong transcript
+          timestamps = fullTranscript.filter((item) =>
+            item.text.toLowerCase().includes(word.toLowerCase())
+          );
+
+          if (timestamps.length > 0) {
+            // Tự động phát video tại thời điểm đầu tiên tìm thấy từ
+            playVideo(videoId, timestamps[0].start);
+            displayTranscript(word);
+          } else {
+            resultsDiv.innerHTML = `
+                        <div class="video-info">
+                            <img src="${thumbnail}" alt="${title}">
+                            <div>
+                                <h3>${title}</h3>
+                                <p>Không tìm thấy từ "${word}" trong video này.</p>
+                            </div>
+                        </div>
+                    `;
+            displayNavigationButtons(word);
+          }
+        } catch (error) {
+          console.error("Lỗi khi lấy transcript:", error);
+          resultsDiv.innerHTML = `
+                    <div class="video-info">
+                        <img src="${thumbnail}" alt="${title}">
+                        <div>
+                            <h3>${title}</h3>
+                            <p>Không thể lấy transcript cho video này (có thể video không có phụ đề).</p>
+                        </div>
+                    </div>
+                `;
+          displayNavigationButtons(word);
+        }
+      }
+
+      function displayTranscript(word) {
+        const title = videos[currentVideoIndex].snippet.title;
+        const thumbnail =
+          videos[currentVideoIndex].snippet.thumbnails.medium.url;
+
+        resultsDiv.innerHTML = `
+                <div class="video-info">
+                    <img src="${thumbnail}" alt="${title}">
+                    <div>
+                        <h3>${title}</h3>
+                    </div>
+                </div>
+            `;
+
+        // Hiển thị toàn bộ transcript, làm nổi bật từ được tìm kiếm
+        transcriptDiv.innerHTML = "";
+        fullTranscript.forEach((item) => {
+          const transcriptItem = document.createElement("div");
+          transcriptItem.className = "transcript-item";
+          const highlightedText = item.text.replace(
+            new RegExp(word, "gi"),
+            (match) => `<span class="highlight">${match}</span>`
+          );
+          transcriptItem.innerHTML = `[${Math.floor(
+            item.start
+          )} giây]: ${highlightedText}`;
+          transcriptDiv.appendChild(transcriptItem);
+        });
+
+        // Thêm nút điều hướng
+        displayNavigationButtons(word);
+      }
+
+      function displayNavigationButtons(word) {
+        const navDiv = document.createElement("div");
+        if (currentVideoIndex > 0) {
+          const prevButton = document.createElement("button");
+          prevButton.innerText = "Video trước đó";
+          prevButton.onclick = () => {
+            resultsDiv.innerHTML = "";
+            playerDiv.innerHTML = "";
+            transcriptDiv.innerHTML = "";
+            processVideo(currentVideoIndex - 1, word);
+          };
+          navDiv.appendChild(prevButton);
+        }
+
+        if (currentVideoIndex < videos.length - 1) {
+          const nextButton = document.createElement("button");
+          nextButton.innerText = "Video tiếp theo";
+          nextButton.onclick = () => {
+            resultsDiv.innerHTML = "";
+            playerDiv.innerHTML = "";
+            transcriptDiv.innerHTML = "";
+            processVideo(currentVideoIndex + 1, word);
+          };
+          navDiv.appendChild(nextButton);
+        }
+
+        resultsDiv.appendChild(navDiv);
+      }
+
+      function playVideo(videoId, startTime) {
+        playerDiv.innerHTML = `
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}?start=${Math.floor(
+          startTime
+        )}&autoplay=1" 
+                frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen></iframe>
+            `;
+      }
+
+      // Tự động tìm kiếm khi nhấn Enter
+      document
+        .getElementById("searchInput")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            searchVideos();
+          }
+        });
+    </script>
+  </body>
+</html>

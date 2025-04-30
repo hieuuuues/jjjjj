@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kho Từ Vựng - Smart Lex</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #60a5fa;
+        --secondary-color: #2563eb;
+        --background: #f0f4f8;
+        --card-bg: #ffffff;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Header Styles */
+      .header {
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header .logo {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .header .logo img {
+        width: 32px;
+        flex-shrink: 0;
+      }
+
+      .header .logo-text {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background: var(--secondary-color);
+      }
+
+      /* Main Content */
+      .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      .intro-section {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: var(--shadow);
+      }
+
+      .intro-section h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+      }
+
+      .intro-section p {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .feature-card {
+        background: var(--background);
+        border-radius: 12px;
+        padding: 1.2rem;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .feature-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+        color: var(--text-primary);
+      }
+
+      .feature-card h3 i {
+        color: var(--primary-color);
+      }
+
+      .feature-card p {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+      .section {
+        margin: 4rem 0;
+      }
+
+      .section h2 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-align: center;
+        margin-bottom: 1rem;
+      }
+
+      .section p.subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        text-align: center;
+        margin-bottom: 2rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .vocab-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .vocab-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .vocab-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .vocab-card i {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .vocab-card h3 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+      }
+
+      .vocab-card p {
+        font-size: 0.95rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .vocab-card .stats {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .vocab-card .badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(96, 165, 250, 0.2);
+        color: var(--primary-color);
+        padding: 0.2rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+
+      .ai-features {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 3rem 0;
+        box-shadow: var(--shadow);
+      }
+
+      .ai-features h2 {
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--text-primary);
+      }
+
+      .ai-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .ai-card {
+        padding: 1.5rem;
+        border-radius: 12px;
+        background: var(--background);
+        transition: transform 0.3s ease;
+      }
+
+      .ai-card:hover {
+        transform: translateY(-3px);
+      }
+
+      .ai-card .ai-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      .ai-card .ai-icon i {
+        color: white;
+        font-size: 1.5rem;
+      }
+
+      .ai-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .ai-card p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .game-modes {
+        margin: 4rem 0;
+      }
+
+      .game-modes h2 {
+        font-size: 1.8rem;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .game-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .game-card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease;
+      }
+
+      .game-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .game-img {
+        height: 160px;
+        background-color: #dbeafe;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .game-img i {
+        font-size: 3rem;
+        color: var(--primary-color);
+      }
+
+      .game-content {
+        padding: 1.5rem;
+      }
+
+      .game-content h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .game-content p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+
+      .game-content .difficulty {
+        display: flex;
+        align-items: center;
+        margin-top: 1rem;
+      }
+
+      .game-content .difficulty span {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-right: 0.5rem;
+      }
+
+      .difficulty-meter {
+        display: flex;
+        gap: 2px;
+      }
+
+      .difficulty-meter .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #e5e7eb;
+      }
+
+      .difficulty-meter .dot.active {
+        background: var(--primary-color);
+      }
+
+      /* Footer */
+      .footer {
+        background: var(--card-bg);
+        padding: 3rem 1rem;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      .footer-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+      }
+
+      .footer h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+      }
+
+      .footer ul {
+        list-style: none;
+      }
+
+      .footer ul li {
+        margin-bottom: 0.6rem;
+      }
+
+      .footer ul a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: color 0.3s;
+      }
+
+      .footer ul a:hover {
+        color: var(--primary-color);
+      }
+
+      .footer .social-links a {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer .social-links i {
+        font-size: 1.1rem;
+      }
+
+      .footer .copyright {
+        text-align: center;
+        margin-top: 2rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Media Queries */
+      @media (max-width: 768px) {
+        .section {
+          margin: 3rem auto;
+        }
+
+        .section h2 {
+          font-size: 1.8rem;
+        }
+
+        .section p.subtitle {
+          font-size: 0.9rem;
+        }
+
+        .vocab-grid,
+        .ai-grid,
+        .game-cards {
+          grid-template-columns: 1fr;
+        }
+
+        .vocab-card,
+        .ai-card {
+          padding: 1.2rem;
+        }
+
+        .footer {
+          padding: 2rem 0.5rem;
+        }
+
+        .footer-container {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .section h2 {
+          font-size: 1.5rem;
+        }
+
+        .intro-section h1 {
+          font-size: 1.6rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header with Back Button -->
+    <header class="header">
+      <div class="logo">
+        <img src="Remove-bg.ai_1734260849847.png" alt="Smart Lex Logo" />
+        <span class="logo-text">Smart Lex</span>
+      </div>
+      <button class="back-btn" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+      <!-- Intro Section -->
+      <div class="intro-section">
+        <h1>Kho Từ Vựng Thông Minh</h1>
+        <p>
+          Smart Lex cung cấp các bộ từ vựng đa dạng được thiết kế thông minh với
+          công nghệ AI giúp bạn học hiệu quả hơn. Hệ thống sẽ tùy chỉnh trải
+          nghiệm học tập dựa trên phong cách học và tiến độ của bạn.
+        </p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <h3><i class="fas fa-brain"></i> Học thông minh</h3>
+            <p>
+              Thuật toán AI phân tích cách học và điều chỉnh nội dung phù hợp
+              với bạn
+            </p>
+          </div>
+          <div class="feature-card">
+            <h3><i class="fas fa-sync-alt"></i> Ôn tập hợp lý</h3>
+            <p>Hệ thống gợi ý thời điểm ôn tập tối ưu dựa trên chu kỳ quên</p>
+          </div>
+          <div class="feature-card">
+            <h3><i class="fas fa-gamepad"></i> Học qua trò chơi</h3>
+            <p>
+              Các mini-game giúp việc học từ vựng trở nên thú vị và hiệu quả
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vocab Section -->
+      <section class="section">
+        <h2>Kho Từ Vựng Có Sẵn</h2>
+        <p class="subtitle">
+          Khám phá các chủ đề từ vựng đa dạng để nâng cao vốn từ của bạn.
+        </p>
+        <div class="vocab-grid">
+          <div class="vocab-card">
+            <span class="badge">Phổ biến</span>
+            <i class="fas fa-plane"></i>
+            <h3>Từ Vựng Du Lịch</h3>
+            <p>
+              Các từ vựng liên quan đến du lịch và khám phá thế giới, đặt phòng,
+              phương tiện di chuyển và trải nghiệm văn hóa.
+            </p>
+            <div class="stats">
+              <span><i class="fas fa-book"></i> 500+ từ</span>
+              <span><i class="fas fa-users"></i> 2.5k người học</span>
+            </div>
+          </div>
+          <div class="vocab-card">
+            <i class="fas fa-briefcase"></i>
+            <h3>Từ Vựng Công Việc</h3>
+            <p>
+              Từ vựng chuyên ngành về công việc, phỏng vấn, giao tiếp trong môi
+              trường doanh nghiệp và thăng tiến nghề nghiệp.
+            </p>
+            <div class="stats">
+              <span><i class="fas fa-book"></i> 450+ từ</span>
+              <span><i class="fas fa-users"></i> 1.8k người học</span>
+            </div>
+          </div>
+          <div class="vocab-card">
+            <span class="badge">Mới</span>
+            <i class="fas fa-utensils"></i>
+            <h3>Từ Vựng Ẩm Thực</h3>
+            <p>
+              Từ vựng về món ăn, nhà hàng, nấu nướng và thưởng thức ẩm thực từ
+              khắp nơi trên thế giới.
+            </p>
+            <div class="stats">
+              <span><i class="fas fa-book"></i> 400+ từ</span>
+              <span><i class="fas fa-users"></i> 1.2k người học</span>
+            </div>
+          </div>
+          <div class="vocab-card">
+            <i class="fas fa-graduation-cap"></i>
+            <h3>Từ Vựng Học Tập</h3>
+            <p>
+              Từ vựng liên quan đến giáo dục, học thuật, làm bài thi và nghiên
+              cứu khoa học.
+            </p>
+            <div class="stats">
+              <span><i class="fas fa-book"></i> 350+ từ</span>
+              <span><i class="fas fa-users"></i> 2.1k người học</span>
+            </div>
+          </div>
+          <div class="vocab-card">
+            <i class="fas fa-heart"></i>
+            <h3>Từ Vựng Tình Cảm</h3>
+            <p>
+              Từ vựng về cảm xúc, tình yêu, mối quan hệ và các trạng thái cảm
+              xúc trong cuộc sống hàng ngày.
+            </p>
+            <div class="stats">
+              <span><i class="fas fa-book"></i> 300+ từ</span>
+              <span><i class="fas fa-users"></i> 1.5k người học</span>
+            </div>
+          </div>
+          <div class="vocab-card">
+            <i class="fas fa-globe"></i>
+            <h3>Từ Vựng Văn Hóa</h3>
+            <p>
+              Từ vựng về phong tục, truyền thống, lễ hội và các khía cạnh văn
+              hóa từ nhiều quốc gia.
+            </p>
+            <div class="stats">
+              <span><i class="fas fa-book"></i> 380+ từ</span>
+              <span><i class="fas fa-users"></i> 1.3k người học</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Features Section -->
+      <div class="ai-features">
+        <h2>Trí Tuệ Nhân Tạo Trong Smart Lex</h2>
+        <div class="ai-grid">
+          <div class="ai-card">
+            <div class="ai-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h3>Trợ Lý AI Cá Nhân</h3>
+            <p>
+              Trợ lý thông minh hỗ trợ bạn 24/7, trả lời mọi câu hỏi về ngôn ngữ
+              và gợi ý phương pháp học tập phù hợp.
+            </p>
+          </div>
+          <div class="ai-card">
+            <div class="ai-icon">
+              <i class="fas fa-microphone"></i>
+            </div>
+            <h3>Phát Âm Thông Minh</h3>
+            <p>
+              Công nghệ nhận diện giọng nói AI giúp bạn hoàn thiện phát âm với
+              nhận xét chi tiết và hướng dẫn cải thiện.
+            </p>
+          </div>
+          <div class="ai-card">
+            <div class="ai-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Phân Tích Tiến Độ</h3>
+            <p>
+              AI phân tích điểm mạnh, điểm yếu và đề xuất kế hoạch học tập để
+              cải thiện hiệu quả tối đa.
+            </p>
+          </div>
+          <div class="ai-card">
+            <div class="ai-icon">
+              <i class="fas fa-lightbulb"></i>
+            </div>
+            <h3>Gợi Ý Nội Dung</h3>
+            <p>
+              Hệ thống gợi ý thông minh đề xuất từ vựng, bài học và nội dung phù
+              hợp với trình độ và mục tiêu của bạn.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Modes Section -->
+      <div class="game-modes">
+        <h2>Các Chế Độ Trò Chơi</h2>
+        <div class="game-cards">
+          <div class="game-card">
+            <div class="game-img">
+              <i class="fas fa-puzzle-piece"></i>
+            </div>
+            <div class="game-content">
+              <h3>Flashcards Thông Minh</h3>
+              <p>
+                Học và ôn tập với hệ thống flashcards được tối ưu theo khả năng
+                ghi nhớ của bạn.
+              </p>
+              <div class="difficulty">
+                <span>Độ khó:</span>
+                <div class="difficulty-meter">
+                  <div class="dot active"></div>
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="game-card">
+            <div class="game-img">
+              <i class="fas fa-gamepad"></i>
+            </div>
+            <div class="game-content">
+              <h3>Word Connection</h3>
+              <p>
+                Kết nối các từ liên quan nhau để tăng cường khả năng liên kết
+                ngữ nghĩa.
+              </p>
+              <div class="difficulty">
+                <span>Độ khó:</span>
+                <div class="difficulty-meter">
+                  <div class="dot active"></div>
+                  <div class="dot active"></div>
+                  <div class="dot"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="game-card">
+            <div class="game-img">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="game-content">
+              <h3>Speed Challenge</h3>
+              <p>
+                Thử thách tốc độ phản xạ với các từ vựng trong thời gian giới
+                hạn.
+              </p>
+              <div class="difficulty">
+                <span>Độ khó:</span>
+                <div class="difficulty-meter">
+                  <div class="dot active"></div>
+                  <div class="dot active"></div>
+                  <div class="dot active"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div>
+          <h3>Smart Lex</h3>
+          <ul>
+            <li><a href="#!">Giới thiệu</a></li>
+            <li><a href="#!">Đội ngũ</a></li>
+            <li><a href="#!">Hỗ trợ</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Danh Mục Học</h3>
+          <ul>
+            <li><a href="#!">Từ vựng cơ bản</a></li>
+            <li><a href="#!">IELTS</a></li>
+            <li><a href="#!">TOEIC</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Tải Ứng Dụng</h3>
+          <ul>
+            <li><a href="#!">iOS</a></li>
+            <li><a href="#!">Android</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Kết Nối</h3>
+          <ul class="social-links">
+            <li>
+              <a href="#!"><i class="fab fa-twitter"></i> Twitter</a>
+            </li>
+            <li>
+              <a href="#!"><i class="fab fa-facebook-f"></i> Facebook</a>
+            </li>
+            <li>
+              <a href="#!"><i class="fab fa-instagram"></i> Instagram</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="copyright">© 2025 Smart Lex. All rights reserved.</div>
+    </footer>
+
+    <script>
+      // Có thể thêm JavaScript cho các tính năng tương tác nếu cần
+    </script>
+  </body>
+</html>

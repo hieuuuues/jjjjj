@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nhập Từ Vựng | Vocabulary Manager</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Giữ nguyên toàn bộ CSS từ mã trước đó */
+      :root {
+        --primary-color: #007bff;
+        --background: #f7f9fc;
+        --card-bg: #ffffff;
+        --text-primary: #1a2a44;
+        --text-secondary: #6b7280;
+        --border-color: #e5e7eb;
+        --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        --success: #22c55e;
+        --error: #ef4444;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Fira Code", Menlo, Courier, monospace;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--text-primary);
+        min-height: 100vh;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      .container {
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .header {
+        margin-bottom: 1rem;
+      }
+
+      .back-button {
+        background: var(--card-bg);
+        color: var(--primary-color);
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem;
+        cursor: pointer;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow);
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+
+      .back-button:hover {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .vocabulary-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .vocabulary-card {
+        background: var(--card-bg);
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow);
+        position: relative;
+      }
+
+      .card-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        position: relative;
+      }
+
+      .form-group label {
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent; /* Tắt hiệu ứng tap highlight */
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: var(--card-bg);
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      .form-group input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        outline: none;
+      }
+
+      .meaning-input {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .meaning-input small {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      .image-preview {
+        width: 100%;
+        height: 100px;
+        border-radius: 8px;
+        background: var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .image-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .image-preview input {
+        display: none;
+      }
+
+      .delete-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+      }
+
+      .delete-button:hover {
+        background: #dc2626;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+
+      .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        background: var(--primary-color);
+        color: white;
+        transition: all 0.2s;
+      }
+
+      .btn:hover {
+        background: #0056b3;
+      }
+
+      .btn-secondary {
+        background: var(--border-color);
+        color: var(--primary-color);
+      }
+
+      .btn-secondary:hover {
+        background: #d1d5db;
+      }
+
+      .notification {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        color: white;
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 0.3s;
+        box-shadow: var(--shadow);
+      }
+
+      .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      #bulkInput {
+        display: none;
+        margin-top: 1rem;
+      }
+
+      #bulkText {
+        width: 100%;
+        padding: 0.5rem;
+        border: 2px solid var(--primary-color);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        resize: vertical;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 0.5rem;
+        }
+        .vocabulary-card {
+          padding: 0.75rem;
+        }
+        .form-group input {
+          font-size: 0.85rem;
+        }
+        .image-preview {
+          height: 80px;
+        }
+        .buttons {
+          flex-direction: column;
+        }
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <a href="vocabulary.html" class="back-button">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+      </div>
+
+      <div class="vocabulary-cards" id="vocabularyCards"></div>
+
+      <div class="buttons">
+        <button class="btn btn-secondary" onclick="addCard()">
+          <i class="fas fa-plus"></i> Thêm thẻ
+        </button>
+        <button class="btn btn-secondary" onclick="showBulkInput()">
+          <i class="fas fa-file-import"></i> Nhập hàng loạt
+        </button>
+        <button class="btn btn-primary" onclick="createFlashcards()">
+          <i class="fas fa-save"></i> Lưu
+        </button>
+      </div>
+
+      <div id="bulkInput">
+        <textarea
+          id="bulkText"
+          rows="5"
+          placeholder="Nhập từ vựng theo định dạng: từ - nghĩa (mỗi dòng 1 từ)"
+        ></textarea>
+        <button class="btn" onclick="processBulkInput()">Tạo thẻ</button>
+      </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+      const WORKER_URL = "https://openai-proxy.daotrunghieu080210.workers.dev";
+      let currentFolderId = null;
+      const DEFAULT_CARDS = 3;
+
+      window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        currentFolderId = urlParams.get("id");
+
+        if (!currentFolderId) {
+          showNotification("Không tìm thấy thư mục!", "error");
+          window.location.href = "index.html";
+          return;
+        }
+
+        const existingFlashcards = localStorage.getItem(
+          `flashcards_${currentFolderId}`
+        );
+        if (existingFlashcards) {
+          window.location.href = `study-options.html?id=${currentFolderId}`;
+          return;
+        }
+
+        for (let i = 0; i < DEFAULT_CARDS; i++) addCard();
+      });
+
+      function addCard(data = {}) {
+        const cardId = Date.now();
+        const card = document.createElement("div");
+        card.className = "vocabulary-card";
+        card.setAttribute("data-id", cardId);
+        card.innerHTML = `
+          <button class="delete-button" onclick="deleteCard(${cardId})">
+            <i class="fas fa-trash"></i>
+          </button>
+          <div class="card-content">
+            <div class="form-group">
+              <label>Từ vựng</label>
+              <input type="text" class="word-input" placeholder="Nhập từ vựng" value="${
+                data.word || ""
+              }">
+            </div>
+            <div class="form-group">
+              <label>Nghĩa</label>
+              <input type="text" class="meaning-input" placeholder="Nghĩa tiếng Việt" value="${
+                data.meaning || ""
+              }">
+              <small class="ipa-text">${data.ipa || ""}</small>
+            </div>
+            <div class="form-group">
+              <label>Hình ảnh</label>
+              <div class="image-preview" id="preview-${cardId}" onclick="triggerFileInput(${cardId})">
+                ${
+                  data.image
+                    ? `<img src="${data.image}" alt="Preview">`
+                    : '<i class="fas fa-cloud-upload-alt"></i>'
+                }
+                <input type="file" accept="image/*" onchange="previewImage(event, ${cardId})">
+              </div>
+            </div>
+          </div>
+        `;
+        document.getElementById("vocabularyCards").appendChild(card);
+
+        const wordInput = card.querySelector(".word-input");
+        wordInput.addEventListener("change", (e) =>
+          fetchMeaningAndIPA(e.target, card)
+        );
+      }
+
+      function deleteCard(cardId) {
+        const card = document.querySelector(
+          `.vocabulary-card[data-id="${cardId}"]`
+        );
+        if (card) {
+          card.remove();
+          if (document.querySelectorAll(".vocabulary-card").length === 0) {
+            addCard();
+          }
+        }
+      }
+
+      async function fetchMeaningAndIPA(inputElement, cardElement) {
+        const word = inputElement.value.trim();
+        if (!word) return;
+
+        const meaningInput = cardElement.querySelector(".meaning-input");
+        const ipaText = cardElement.querySelector(".ipa-text");
+
+        try {
+          const response = await fetch(WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "gpt-4",
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    "Bạn là trợ lý từ điển. Khi nhận được một từ tiếng Anh, hãy trả về nghĩa tiếng Việt và phiên âm IPA trong định dạng: Nghĩa: [nghĩa tiếng Việt] - IPA: [phiên âm]. Ví dụ: Nghĩa: con mèo - IPA: /kæt/",
+                },
+                {
+                  role: "user",
+                  content: `Từ: ${word}`,
+                },
+              ],
+              temperature: 0.7,
+              max_tokens: 100,
+            }),
+          });
+
+          if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+          const rawResponse = data.choices[0].message.content.trim();
+
+          // Phân tích chuỗi phản hồi bằng regex
+          const meaningMatch = rawResponse.match(/Nghĩa: (.*?)( - IPA|$)/i);
+          const ipaMatch = rawResponse.match(/IPA: (.*)$/i);
+
+          const meaning = meaningMatch
+            ? meaningMatch[1].trim()
+            : "Không tìm thấy nghĩa";
+          const ipa = ipaMatch ? ipaMatch[1].trim() : "Không tìm thấy IPA";
+
+          meaningInput.value = meaning;
+          ipaText.textContent = ipa;
+        } catch (error) {
+          console.error("Lỗi khi lấy nghĩa và IPA:", error);
+          meaningInput.value = "Lỗi khi lấy nghĩa";
+          ipaText.textContent = "";
+          showNotification("Không thể lấy nghĩa từ API!", "error");
+        }
+      }
+
+      function previewImage(event, cardId) {
+        const file = event.target.files[0];
+        if (file) {
+          if (file.size > 5 * 1024 * 1024) {
+            showNotification("Ảnh quá lớn (max 5MB)!", "error");
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            document.getElementById(`preview-${cardId}`).innerHTML = `
+              <img src="${e.target.result}" alt="Preview">
+              <input type="file" accept="image/*" onchange="previewImage(event, ${cardId})">
+            `;
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      function triggerFileInput(cardId) {
+        document.querySelector(`#preview-${cardId} input[type="file"]`).click();
+      }
+
+      function createFlashcards() {
+        const cards = [];
+        let hasError = false;
+
+        document.querySelectorAll(".vocabulary-card").forEach((card) => {
+          const word = card.querySelector(".word-input").value.trim();
+          const meaning = card.querySelector(".meaning-input").value.trim();
+          const ipa = card.querySelector(".ipa-text").textContent.trim();
+          const image = card.querySelector(".image-preview img")?.src;
+
+          if (word && meaning) {
+            if (
+              cards.some((c) => c.word.toLowerCase() === word.toLowerCase())
+            ) {
+              hasError = true;
+              showNotification(`Từ "${word}" bị trùng!`, "error");
+              return;
+            }
+            cards.push({ word, meaning, ipa, image });
+          } else if (word || meaning) {
+            hasError = true;
+            showNotification("Vui lòng nhập đầy đủ từ và nghĩa!", "error");
+          }
+        });
+
+        if (hasError) return;
+        if (!cards.length) {
+          showNotification("Nhập ít nhất 1 từ!", "warning");
+          return;
+        }
+
+        try {
+          localStorage.setItem(
+            `flashcards_${currentFolderId}`,
+            JSON.stringify(cards)
+          );
+          const folders =
+            JSON.parse(localStorage.getItem("vocabularyFolders")) || {};
+          for (let i = 1; i <= 7; i++) {
+            const dayKey = `day${i}`;
+            const folder = folders[dayKey]?.find(
+              (f) => f.id === parseInt(currentFolderId)
+            );
+            if (folder) {
+              folder.wordCount = cards.length;
+              localStorage.setItem(
+                "vocabularyFolders",
+                JSON.stringify(folders)
+              );
+              break;
+            }
+          }
+          showNotification("Đã lưu thành công!", "success");
+          setTimeout(
+            () =>
+              (window.location.href = `study-options.html?id=${currentFolderId}`),
+            1000
+          );
+        } catch (e) {
+          showNotification("Lỗi khi lưu! Dữ liệu quá lớn.", "error");
+        }
+      }
+
+      function showNotification(message, type) {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.style.backgroundColor =
+          type === "success" ? "var(--success)" : "var(--error)";
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 3000);
+      }
+
+      function showBulkInput() {
+        const bulkInput = document.getElementById("bulkInput");
+        bulkInput.style.display =
+          bulkInput.style.display === "none" ? "block" : "none";
+      }
+
+      async function processBulkInput() {
+        const bulkText = document.getElementById("bulkText").value.trim();
+        if (!bulkText) {
+          showNotification("Vui lòng nhập dữ liệu!", "error");
+          return;
+        }
+
+        const lines = bulkText.split("\n");
+        for (const line of lines) {
+          const [word] = line.split("-").map((item) => item.trim());
+          if (word) {
+            const cardData = { word };
+            addCard(cardData);
+            const card = document.querySelector(
+              `.vocabulary-card[data-id="${Date.now()}"]`
+            );
+            if (card) {
+              await fetchMeaningAndIPA(card.querySelector(".word-input"), card);
+            }
+          }
+        }
+        document.getElementById("bulkText").value = "";
+        document.getElementById("bulkInput").style.display = "none";
+        showNotification("Đã thêm từ vựng thành công!", "success");
+      }
+    </script>
+  </body>
+</html>
